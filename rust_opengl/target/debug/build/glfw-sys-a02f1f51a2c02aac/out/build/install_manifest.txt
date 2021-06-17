@@ -1,0 +1,8 @@
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/include/GLFW/glfw3.h
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/include/GLFW/glfw3native.h
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/lib/cmake/glfw3/glfw3Config.cmake
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/lib/cmake/glfw3/glfw3ConfigVersion.cmake
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/lib/cmake/glfw3/glfw3Targets.cmake
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/lib/cmake/glfw3/glfw3Targets-debug.cmake
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/lib/pkgconfig/glfw3.pc
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/lib/glfw3.lib

@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=c:\Users\jdk91\Desktop\learn_opengl\target\debug\build\typenum-0c06af3beab2e646\out\consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=c:\Users\jdk91\Desktop\learn_opengl\target\debug\build\typenum-0c06af3beab2e646\out\op.rs

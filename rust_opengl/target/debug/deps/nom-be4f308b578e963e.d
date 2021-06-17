@@ -1,0 +1,15 @@
+c:\Users\jdk91\Desktop\learn_opengl\target\debug\deps\nom-be4f308b578e963e.rmeta: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\util.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\internal.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\macros.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\methods.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\bytes.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\bits.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\nom.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\character.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\stream.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\str.rs
+
+c:\Users\jdk91\Desktop\learn_opengl\target\debug\deps\nom-be4f308b578e963e.d: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\util.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\internal.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\macros.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\methods.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\bytes.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\bits.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\nom.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\character.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\stream.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\str.rs
+
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\lib.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\util.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\internal.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\macros.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\methods.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\bytes.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\bits.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\nom.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\character.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\stream.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\nom-1.2.4\src\str.rs:

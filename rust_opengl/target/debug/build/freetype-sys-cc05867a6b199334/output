@@ -1,0 +1,146 @@
+cargo:rerun-if-env-changed=FREETYPE2_NO_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG
+cargo:rerun-if-env-changed=FREETYPE2_STATIC
+cargo:rerun-if-env-changed=FREETYPE2_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64-pc-windows-msvc
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64_pc_windows_msvc
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+running: "cmake" "C:\\Users\\jdk91\\.cargo\\registry\\src\\github.com-1ecc6299db9ec823\\freetype-sys-0.14.0\\freetype2" "-G" "Visual Studio 16 2019" "-Thost=x64" "-Ax64" "-DCMAKE_DISABLE_FIND_PACKAGE_BZip2=TRUE" "-DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=TRUE" "-DCMAKE_DISABLE_FIND_PACKAGE_PNG=TRUE" "-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=TRUE" "-DCMAKE_DISABLE_FIND_PACKAGE_BrotliDec=TRUE" "-DCMAKE_INSTALL_PREFIX=c:\\Users\\jdk91\\Desktop\\learn_opengl\\target\\debug\\build\\freetype-sys-cc05867a6b199334\\out" "-DCMAKE_C_FLAGS= -nologo -MD -Brepro" "-DCMAKE_C_FLAGS_RELEASE= -nologo -MD -Brepro" "-DCMAKE_CXX_FLAGS= -nologo -MD -Brepro" "-DCMAKE_CXX_FLAGS_RELEASE= -nologo -MD -Brepro" "-DCMAKE_ASM_FLAGS= -nologo -MD -Brepro" "-DCMAKE_ASM_FLAGS_RELEASE= -nologo -MD -Brepro" "-DCMAKE_BUILD_TYPE=Release"
+-- Selecting Windows SDK version 10.0.18362.0 to target Windows 10.0.19042.
+-- The C compiler identification is MSVC 19.28.29913.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/build
+running: "cmake" "--build" "." "--target" "install" "--config" "Release" "--"
+Microsoft (R) Build Engine version 16.9.0+57a23d249 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Checking Build System
+  Building Custom Rule C:/Users/jdk91/.cargo/registry/src/github.com-1ecc6299db9ec823/freetype-sys-0.14.0/freetype2/CMakeLists.txt
+  autofit.c
+  ftbase.c
+  ftbbox.c
+  ftbdf.c
+  ftbitmap.c
+  ftcid.c
+  ftfstype.c
+  ftgasp.c
+  ftglyph.c
+  ftgxval.c
+  ftinit.c
+  ftmm.c
+  ftotval.c
+  ftpatent.c
+  ftpfr.c
+  ftstroke.c
+  ftsynth.c
+  fttype1.c
+  ftwinfnt.c
+  bdf.c
+  Generating Code...
+  Compiling...
+  ftbzip2.c
+  ftcache.c
+  cff.c
+  type1cid.c
+  ftgzip.c
+  ftlzw.c
+  pcf.c
+  pfr.c
+  psaux.c
+  pshinter.c
+  psnames.c
+  raster.c
+  sfnt.c
+  smooth.c
+  truetype.c
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\freetype-sys-0.14.0\freetype2\src\truetype\ttgload.c(1901,42): warning C4312: 'type cast': conversion from 'unsigned long' to 'void *' of greater size [C:\Users\jdk91\Desktop\learn_opengl\target\debug\build\freetype-sys-cc05867a6b199334\out\build\freetype.vcxproj]
+  type1.c
+  type42.c
+  winfnt.c
+  ftsystem.c
+  ftdebug.c
+  Generating Code...
+  freetype.vcxproj -> C:\Users\jdk91\Desktop\learn_opengl\target\debug\build\freetype-sys-cc05867a6b199334\out\build\Release\freetype.lib
+  Building Custom Rule C:/Users/jdk91/.cargo/registry/src/github.com-1ecc6299db9ec823/freetype-sys-0.14.0/freetype2/CMakeLists.txt
+  -- Install configuration: "Release"
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/ftheader.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/ftmodule.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/ftstdlib.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/integer-types.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/mac-support.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/public-macros.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/freetype.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftadvanc.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftbbox.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftbdf.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftbitmap.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftbzip2.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftcache.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftchapters.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftcid.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftcolor.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftdriver.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/fterrdef.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/fterrors.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftfntfmt.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftgasp.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftglyph.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftgxval.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftgzip.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftimage.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftincrem.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftlcdfil.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftlist.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftlzw.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftmac.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftmm.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftmodapi.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftmoderr.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftotval.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftoutln.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftparams.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftpfr.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftrender.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftsizes.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftsnames.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftstroke.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftsynth.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftsystem.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/fttrigon.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/fttypes.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ftwinfnt.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/t1tables.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/ttnameid.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/tttables.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/tttags.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/ft2build.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/ftconfig.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/include/freetype2/freetype/config/ftoption.h
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/lib/freetype.lib
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/lib/cmake/freetype/freetype-config.cmake
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/lib/cmake/freetype/freetype-config-release.cmake
+  -- Installing: C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-cc05867a6b199334/out/lib/cmake/freetype/freetype-config-version.cmake
+cargo:root=c:\Users\jdk91\Desktop\learn_opengl\target\debug\build\freetype-sys-cc05867a6b199334\out
+cargo:rustc-link-search=native=c:\Users\jdk91\Desktop\learn_opengl\target\debug\build\freetype-sys-cc05867a6b199334\out/lib
+cargo:rustc-link-lib=static=freetype
+cargo:outdir=c:\Users\jdk91\Desktop\learn_opengl\target\debug\build\freetype-sys-cc05867a6b199334\out

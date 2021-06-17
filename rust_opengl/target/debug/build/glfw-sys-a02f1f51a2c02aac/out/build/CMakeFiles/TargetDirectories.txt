@@ -1,0 +1,6 @@
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build/CMakeFiles/uninstall.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build/CMakeFiles/INSTALL.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build/src/CMakeFiles/glfw.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build/src/CMakeFiles/INSTALL.dir

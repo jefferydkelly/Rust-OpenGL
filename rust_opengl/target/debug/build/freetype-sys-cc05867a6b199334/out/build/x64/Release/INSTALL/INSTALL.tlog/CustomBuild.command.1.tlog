@@ -1,0 +1,10 @@
+^C:\USERS\JDK91\DESKTOP\LEARN_OPENGL\TARGET\DEBUG\BUILD\FREETYPE-SYS-CC05867A6B199334\OUT\BUILD\CMAKEFILES\488065D7FEF92726573B217918D9385F\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

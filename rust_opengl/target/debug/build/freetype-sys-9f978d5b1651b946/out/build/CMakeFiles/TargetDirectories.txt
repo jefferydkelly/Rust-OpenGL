@@ -1,0 +1,6 @@
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-9f978d5b1651b946/out/build/CMakeFiles/PACKAGE.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-9f978d5b1651b946/out/build/CMakeFiles/freetype.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-9f978d5b1651b946/out/build/CMakeFiles/dist.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-9f978d5b1651b946/out/build/CMakeFiles/INSTALL.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-9f978d5b1651b946/out/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/freetype-sys-9f978d5b1651b946/out/build/CMakeFiles/ZERO_CHECK.dir

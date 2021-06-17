@@ -1,0 +1,13 @@
+prefix=c:\Users\jdk91\Desktop\learn_opengl\target\debug\build\libz-sys-25979ecdd8d4f35b\out
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+sharedlibdir=@sharedlibdir@
+includedir=@includedir@
+
+Name: zlib
+Description: zlib compression library
+Version: @VERSION@
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

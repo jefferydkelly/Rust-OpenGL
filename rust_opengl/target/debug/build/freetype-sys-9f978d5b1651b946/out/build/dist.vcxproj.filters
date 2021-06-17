@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jdk91\Desktop\learn_opengl\target\debug\build\freetype-sys-9f978d5b1651b946\out\build\CMakeFiles\d51fa09a9290d8eb5cc29039841e91dd\dist.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\freetype-sys-0.13.1\freetype2\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\jdk91\Desktop\learn_opengl\target\debug\build\freetype-sys-9f978d5b1651b946\out\build\CMakeFiles\dist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{DE17B71B-B803-30C3-8886-71DB16F63508}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+^C:\USERS\JDK91\DESKTOP\LEARN_OPENGL\TARGET\DEBUG\BUILD\GLFW-SYS-A02F1F51A2C02AAC\OUT\BUILD\CMAKEFILES\E560F98499E339D00AD4900C2A302CBB\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/jdk91/.cargo/registry/src/github.com-1ecc6299db9ec823/glfw-sys-3.3.4 -BC:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/jdk91/Desktop/learn_opengl/target/debug/build/glfw-sys-a02f1f51a2c02aac/out/build/GLFW.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

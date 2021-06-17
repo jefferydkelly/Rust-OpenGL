@@ -1,0 +1,12 @@
+c:\Users\jdk91\Desktop\learn_opengl\target\debug\deps\gcc-81a04980f269ecb2.rmeta: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\registry.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\winapi.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\com.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\setup_config.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\windows_registry.rs
+
+c:\Users\jdk91\Desktop\learn_opengl\target\debug\deps\libgcc-81a04980f269ecb2.rlib: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\registry.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\winapi.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\com.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\setup_config.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\windows_registry.rs
+
+c:\Users\jdk91\Desktop\learn_opengl\target\debug\deps\gcc-81a04980f269ecb2.d: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\registry.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\winapi.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\com.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\setup_config.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\windows_registry.rs
+
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\lib.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\registry.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\winapi.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\com.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\setup_config.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\gcc-0.3.55\src\windows_registry.rs:
