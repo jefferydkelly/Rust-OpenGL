@@ -22,11 +22,7 @@ impl Model {
        let new_path = Path::new(path);
        let cannon = new_path.canonicalize().unwrap();
        let mut path_str = cannon.to_str().unwrap();
-       if path_str.starts_with("//?/") {
-           let (_, act_path) = path_str.split_at(4);
-           path_str = act_path;
-       }
-       println!("{}", &path_str);
+      
         let obj = tobj::load_obj(path_str,
              &tobj::LoadOptions {
                 single_index: true,

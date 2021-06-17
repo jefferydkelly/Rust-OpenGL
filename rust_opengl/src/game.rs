@@ -51,7 +51,7 @@ impl Game {
         let tex = TextBox::new(vec2(200.0, 300.0), text);
         uim.add_element(Box::new(tex));
 
-        let the_models = res_man.load_json("src/resources/json/test.json");
+        let (the_models, directional_light) = res_man.load_json("src/resources/json/test.json");
         
         
         let house_shader = res_man.load_shader("src/resources/shaders/model.vs", "src/resources/shaders/model.fs", "model");
@@ -104,12 +104,6 @@ impl Game {
             linear: 0.09,
             quadratic: 0.032
         },];
-        let directional_light = DirectionalLight {
-            direction: vec3(-0.2, -1.0, 0.3),
-            ambient: vec3(0.5, 0.5, 0.5),
-            diffuse: vec3(0.4, 0.4, 0.4),
-            specular: vec3 (0.5, 0.5, 0.5)
-        };
         
         house_shader.set_dir_light("dirLight", directional_light);
 

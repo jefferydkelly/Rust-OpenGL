@@ -10,6 +10,7 @@ use serde_json::{Result, Value};
 use crate::model::Model;
 use crate::shader::Shader;
 use crate::texture::Texture;
+use crate::lights::DirectionalLight;
 
 extern crate rusty_audio;
 use rusty_audio::Audio;
@@ -88,7 +89,7 @@ impl  ResourceManager {
         self.audio.play(name);
     }
 
-    pub fn load_json(&mut self, path:&str) -> Vec<Model> {
+    pub fn load_json(&mut self, path:&str) -> (Vec<Model>, DirectionalLight) {
         let code = fs::read_to_string(path).expect("Unable to load JSON");
         let v:Value = serde_json::from_str(&code).unwrap();
         let mut models:Vec<Model> = Vec::new();
@@ -112,7 +113,14 @@ impl  ResourceManager {
             models.push(model);
         }
 
-        models
+        let light_val = v["lights"].as_array().unwrap().get(0).unwrap();
+        let light = DirectionalLight{
+            direction: self.parse_vec3(light_val["direction"].to_owned(), false),
+            ambient: self.parse_vec3(light_val["ambient"].to_owned(), false),
+            diffuse: self.parse_vec3(light_val["diffuse"].to_owned(), false),
+            specular: self.parse_vec3(light_val["specular"].to_owned(), false)
+        };
+        (models, light)
        
     }
 
