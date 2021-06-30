@@ -1,26 +1,25 @@
 extern crate nalgebra_glm as glm;
 
-use core::f32;
 use std::ffi::c_void;
 use std::ptr;
 use std::u32;
 use std::mem;
 
-use glm::{Vec3, Vec2, vec3, vec2, Mat4, Vec4};
+use glm::{Mat4, Vec4};
 use memoffset::offset_of;
 use crate::shader::Shader;
 use crate::vertex::Vertex;
-
+use crate::transform::Transform;
 use gl;
 use gl::types::*;
 
+#[derive(Clone)]
 pub struct Mesh {
     pub vao:u32,
     vbo:u32,
     ebo:u32,
     pub vertices:Vec<Vertex>,
     pub indices:Vec<u32>,
-    is_instanced:bool,
     num_instances:i32,
     instances: Vec<Mat4>,
     instance_vbo:u32
@@ -34,7 +33,6 @@ impl Mesh {
             ebo:0,
             vertices:verts,
             indices:inds,
-            is_instanced:false,
             num_instances:0,
             instances: Vec::new(),
             instance_vbo: 0
@@ -77,16 +75,21 @@ impl Mesh {
         }
     }
 
-    pub fn add_instance(&mut self, inst_pos:Mat4) {
-        self.instances.push(inst_pos);
+    pub fn add_instance(&mut self, t:Transform)->usize {
+        self.instances.push(t.model_matrix);
         self.num_instances+=1;
+        return (self.num_instances - 1) as usize;
+    }
+
+    pub fn update_instance(&mut self, index:usize, t:Transform) {
+        self.instances[index] = t.model_matrix;
     }
 
     pub fn create_instances(&mut self) {
         unsafe {
             gl::BindVertexArray(self.vao);
             gl::BindBuffer(gl::ARRAY_BUFFER, self.instance_vbo);
-            gl::BufferData(gl::ARRAY_BUFFER, (mem::size_of::<Mat4>() * self.instances.len()) as GLsizeiptr, self.instances[0].as_ptr()  as *const GLvoid, gl::STATIC_DRAW);
+            gl::BufferData(gl::ARRAY_BUFFER, (mem::size_of::<Mat4>() * self.instances.len()) as GLsizeiptr, self.instances.as_ptr()  as *const GLvoid, gl::STATIC_DRAW);
             
 
             let mat_size = mem::size_of::<Mat4>() as GLsizei;
@@ -112,7 +115,7 @@ impl Mesh {
         }
     }
 
-    pub fn draw(&self, shader:&mut Shader) {
+    pub fn draw(&self) {
         unsafe {
             gl::BindVertexArray(self.vao);
             gl::DrawElementsInstanced(gl::TRIANGLES, self.indices.len() as i32, gl::UNSIGNED_INT, ptr::null(), self.num_instances);

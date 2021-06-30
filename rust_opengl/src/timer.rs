@@ -23,7 +23,7 @@ impl Updated for TimerManager {
         }
     }
 }
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub enum TimerState {
     UNSTARTED,
 	RUNNING,
@@ -32,6 +32,7 @@ pub enum TimerState {
 	STOPPED,
 	COMPLETED
 }
+#[derive(Clone, Copy)]
 pub struct Timer {
     tick_time:f32,
     elapsed_time:f32,

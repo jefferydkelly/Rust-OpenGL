@@ -1,34 +1,42 @@
 use core::f32;
-use std::{collections::HashMap, ffi::CString};
-use std::fs::{self, File};
-use std::io::BufReader;
-use std::time::Duration;
-use nalgebra::Matrix5;
+use std::{collections::HashMap};
+use std::fs::{self};
 use nalgebra_glm::{Vec3, vec3, Mat4};
-use serde_json::{Result, Value};
+use once_cell::sync::OnceCell;
+use serde_json::Value;
 
 use crate::model::Model;
 use crate::shader::Shader;
 use crate::texture::Texture;
-use crate::lights::DirectionalLight;
+use crate::lights::*;
+use crate::level::Level;
+use crate::transform::Transform;
 
-extern crate rusty_audio;
-use rusty_audio::Audio;
+static mut RESOURCE_MANAGER:OnceCell<ResourceManager> = OnceCell::new();
+
+#[derive(Debug)]
 pub struct ResourceManager {
     shaders:HashMap<String, Shader>,
-    textures:HashMap<String, Texture>,
-    audio:Audio
+    textures:HashMap<String, Texture>
 }
 
 impl  ResourceManager {
     
-    pub fn new()->Self {
-      
-       
-        Self {
+    pub fn create_instance() {
+        let many = ResourceManager {
             shaders: HashMap::new(),
             textures: HashMap::new(),
-            audio:Audio::new()
+            //audio:Audio::new()
+        };
+
+        unsafe {
+            RESOURCE_MANAGER.set(many).unwrap();
+        }
+    }
+
+    pub fn instance()->&'static mut ResourceManager {
+        unsafe  {
+            RESOURCE_MANAGER.get_mut().expect("Resource Manager has not been created")
         }
     }
 
@@ -41,8 +49,7 @@ impl  ResourceManager {
 
     pub fn load_shader(&mut self, v_shader_src:&str, f_shader_src:&str, name:&str) -> Shader {
         let shady = self.load_shader_from_file(v_shader_src, f_shader_src);
-        //self.shaders.insert(name.to_string(), shady);
-        //self.shaders.get(name).unwrap()
+        self.shaders.insert(name.to_string(), shady);
         shady
     }
 
@@ -75,30 +82,29 @@ impl  ResourceManager {
     pub fn load_texture(&mut self, src: &str, name:&str) -> Texture {
         let mut texture = Texture::new();
         texture.generate(src);
-        //self.textures.insert(name.to_string(), texture);
-        
-        //&self.textures.get(name).unwrap()
+        self.textures.insert(name.to_string(), texture);
         texture
     }
 
-    pub fn load_sound(&mut self, src: &str, name:&'static str) {
-        self.audio.add(name, src);
-    }
+    /*
+   
+    */
 
-    pub fn play_sound(&mut self, name:&str) {
-        self.audio.play(name);
-    }
+    pub fn load_level(&mut self, path:&str) -> Level {
 
-    pub fn load_json(&mut self, path:&str) -> (Vec<Model>, DirectionalLight) {
+        let mut level = Level::new();
         let code = fs::read_to_string(path).expect("Unable to load JSON");
         let v:Value = serde_json::from_str(&code).unwrap();
-        let mut models:Vec<Model> = Vec::new();
-
-    
+     
         for val in v["models"].as_array().unwrap() {
             
             let texture = self.load_texture(val["texture"].as_str().unwrap(), val["name"].as_str().unwrap());
-            let mut model = Model::new(val["path"].as_str().unwrap(), texture);
+            let vertex_src = val["shader"]["vertex"].as_str().unwrap();
+            let fragment_src = val["shader"]["fragment"].as_str().unwrap();
+            let shader_name = val["shader"]["name"].as_str().unwrap();
+
+            let shader = self.load_shader(vertex_src,fragment_src,shader_name);
+            let mut model = Model::new(val["path"].as_str().unwrap(), texture, shader);
 
             let instances = val["instances"].as_array().unwrap();
             for inst in instances{
@@ -106,21 +112,56 @@ impl  ResourceManager {
                 let rotation = self.parse_vec3(inst["rotation"].to_owned(), true);
                 let scale = self.parse_vec3(inst["scale"].to_owned(), false);
         
-                let mat = self.create_mat4(position, rotation, scale);
-                model.add_instance(mat);
+                let transform  = Transform::new(position, rotation, scale);
+                model.add_instance(transform);
             }
             model.create_instances();
-            models.push(model);
+            level.add_model(model);
         }
 
-        let light_val = v["lights"].as_array().unwrap().get(0).unwrap();
-        let light = DirectionalLight{
-            direction: self.parse_vec3(light_val["direction"].to_owned(), false),
-            ambient: self.parse_vec3(light_val["ambient"].to_owned(), false),
-            diffuse: self.parse_vec3(light_val["diffuse"].to_owned(), false),
-            specular: self.parse_vec3(light_val["specular"].to_owned(), false)
-        };
-        (models, light)
+        for val in v["lights"].as_array().unwrap() {
+            if val["type"] == "directional" {
+                let light = DirectionalLight{
+                    direction: self.parse_vec3(val["direction"].to_owned(), false),
+                    ambient: self.parse_vec3(val["ambient"].to_owned(), false),
+                    diffuse: self.parse_vec3(val["diffuse"].to_owned(), false),
+                    specular: self.parse_vec3(val["specular"].to_owned(), false)
+                };
+
+                level.add_directional_light(light);
+            } else if val["type"] == "point" {
+                let light = PointLight{
+                    position: self.parse_vec3(val["position"].to_owned(), false),
+                    ambient: self.parse_vec3(val["ambient"].to_owned(), false),
+                    diffuse: self.parse_vec3(val["diffuse"].to_owned(), false),
+                    specular: self.parse_vec3(val["specular"].to_owned(), false),
+                    constant: val["constant"].as_f64().unwrap() as f32,
+                    linear: val["linear"].as_f64().unwrap() as f32,
+                    quadratic: val["quadratic"].as_f64().unwrap() as f32
+
+                };
+                
+                level.add_point_light(light);
+            } else if val["type"] == "spot" {
+                let light = Spotlight {
+                    cutoff: val["cutoff"].as_f64().unwrap() as f32,
+                    outer_cutoff: val["outerCutoff"].as_f64().unwrap() as f32,
+                    direction: self.parse_vec3(val["direction"].to_owned(), false),
+                    position: self.parse_vec3(val["position"].to_owned(), false),
+                    ambient: self.parse_vec3(val["ambient"].to_owned(), false),
+                    diffuse: self.parse_vec3(val["diffuse"].to_owned(), false),
+                    specular: self.parse_vec3(val["specular"].to_owned(), false),
+                    constant: val["constant"].as_f64().unwrap() as f32,
+                    linear: val["linear"].as_f64().unwrap() as f32,
+                    quadratic: val["quadratic"].as_f64().unwrap() as f32
+                };
+
+                level.add_spotlight(light);
+            }
+        }
+       
+
+        level
        
     }
 
@@ -133,15 +174,6 @@ impl  ResourceManager {
         } else {
             vec3(x,y,z)
         }
-    }
-
-    fn create_mat4(&self, position:Vec3, rotation:Vec3, scale:Vec3) -> Mat4 {
-        let mut model = Mat4::identity();
-        model = glm::translate(&model, &position);
-        model = glm::rotate(&model, rotation.y, &vec3(0.0, 1.0, 0.0));
-        model = glm::scale(&model, &scale);
-
-        model
     }
 
 }

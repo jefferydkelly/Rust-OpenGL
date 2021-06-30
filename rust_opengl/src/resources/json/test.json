@@ -245,6 +245,29 @@
                     }
                 }
             ]
+        }, {
+            "name": "box",
+            "path": "src/resources/models/box01.obj",
+            "texture": "src/resources/textures/box01.png",
+            "instances": [
+                {
+                    "position": {
+                        "x": 0.0,
+                        "y": 5.0,
+                        "z": 0.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.25,
+                        "y": 0.25,
+                        "z": 0.25
+                    }
+                }
+            ]
         }
     ],
     "lights": [
@@ -270,6 +293,110 @@
                 "y": 0.5,
                 "z": 0.5
             }
+        },  
+        {
+            "type": "point",
+            "position": {
+                "x": 2.3, 
+                "y": -3.3, 
+                "z": -4.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
+        }, 
+        {
+            "type": "point",
+            "position": {
+                "x": -4.0, 
+                "y": 2.0, 
+                "z": -12.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
+        },
+        {
+            "type": "point",
+            "position": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": -3.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
+        },
+        {
+            "type": "point",
+            "position": {
+                "x": 0.7, 
+                "y": 0.2, 
+                "z": 2.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
         }
     ]
 }

@@ -11,6 +11,7 @@ pub struct DirectionalLight {
 #[derive(Clone, Copy)]
 pub struct PointLight {
 	pub position:Vec3,
+	
 	pub ambient:Vec3,
 	pub diffuse:Vec3,
 	pub specular:Vec3,
@@ -19,6 +20,7 @@ pub struct PointLight {
 	pub linear:f32,
 	pub quadratic:f32
 }
+
 #[derive(Clone, Copy)]
 pub struct Spotlight {
 	pub cutoff:f32,

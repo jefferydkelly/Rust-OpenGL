@@ -11,10 +11,6 @@ pub trait Rendered {
     fn render(&self, renderer:&SpriteRenderer);
 }
 
-pub trait Controlled {
-    fn receive_input(&mut self, manager:&InputManager);
-}
-
 pub trait UI {
     fn set_visibility(&mut self, visible:bool);
     fn is_visible(&self)->bool;

@@ -1,13 +1,13 @@
-use glm::{Vec2};
+use glm::{Vec3};
 
 #[derive(Clone, Copy)]
 pub struct Collider {
-    pub position:Vec2,
-    pub size:Vec2
+    pub position:Vec3,
+    pub size:Vec3
 }
 
 impl Collider {
-    pub fn new(pos:Vec2, scale:Vec2) -> Self {
+    pub fn new(pos:Vec3, scale:Vec3) -> Self {
         Self {
             position:pos,
             size:scale

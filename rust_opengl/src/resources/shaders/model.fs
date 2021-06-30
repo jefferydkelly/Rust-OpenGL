@@ -53,8 +53,9 @@ uniform sampler2D diffuseTex;
 uniform Material material;
 uniform DirectionalLight dirLight;
 
-#define NR_POINTS_LIGHTS 4
+#define NR_POINTS_LIGHTS 10
 uniform PointLight pointLights[NR_POINTS_LIGHTS];
+uniform int numPointLights;
 
 uniform Spotlight spotlight;
 
@@ -69,7 +70,7 @@ void main()
 	vec3 viewDir = normalize(viewPos - FragPos);
 
 	vec3 result = CalcDirectionalLight(dirLight, norm, viewDir);
-	for (int i = 0; i < NR_POINTS_LIGHTS; i++) {
+	for (int i = 0; i < numPointLights; i++) {
 		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 	}
 	result += CalcSpotlight(spotlight, norm, FragPos, viewDir);

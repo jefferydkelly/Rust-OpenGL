@@ -3,7 +3,7 @@ use std::{ffi::c_void, path::Path};
 
 use image::{self, GenericImageView};
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Texture {
     pub id:u32,
     width:i32,

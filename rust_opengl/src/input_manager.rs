@@ -1,18 +1,37 @@
 
 extern crate nalgebra_glm as glm;
-#[derive(Clone, Copy)]
+
+use std::iter::Once;
+
+use glm::Vec2;
+use once_cell::sync::OnceCell;
+
+
+
+#[derive(Clone, Copy, Debug)]
 pub struct InputManager {
     pub keys:[bool;1024],
     pub mouse_buttons:[bool;8],
     pub mouse_position:glm::Vec2
 }
 
+static mut INPUT_MANAGER:OnceCell<InputManager> = OnceCell::new();
+
 impl InputManager {
-    pub fn new()->InputManager {
-        InputManager {
+    pub fn create_instance() {
+        let many = InputManager {
             keys:[false;1024],
             mouse_buttons:[false;8],
             mouse_position:glm::vec2(0.0,0.0)
+        };
+        unsafe {
+            INPUT_MANAGER.set(many).unwrap();
+        }
+    }
+
+    pub fn instance()->&'static mut InputManager {
+        unsafe  {
+            INPUT_MANAGER.get_mut().expect("Input Manager has not been created")
         }
     }
 
@@ -49,6 +68,10 @@ impl InputManager {
 
     pub fn update_mouse_position(&mut self, x:f32, y:f32) {
         self.mouse_position = glm::vec2(x,y);
+    }
+
+    pub fn update_mouse_position_glm(&mut self, pos:Vec2) {
+        self.mouse_position = pos;
     }
 
     pub fn get_mouse_position(&self)->glm::Vec2 {

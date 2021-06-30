@@ -6,7 +6,7 @@ extern crate nalgebra_glm as glm;
 use crate::lights::*;
 use crate::model::Material;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub  struct Shader {
     id:u32
 }

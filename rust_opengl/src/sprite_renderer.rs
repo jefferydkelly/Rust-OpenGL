@@ -1,5 +1,7 @@
 use crate::shader::Shader;
 use crate::texture::Texture;
+use crate::transform;
+use crate::transform2d::Transform2D;
 
 extern crate gl;
 use gl::{BindBuffer, types::*};
@@ -7,6 +9,7 @@ use glm::vec3;
 
 extern crate nalgebra_glm as glm;
 
+use core::f32;
 use std::{ffi::c_void, mem, ptr};
 
 pub struct SpriteRenderer {
@@ -17,6 +20,8 @@ pub struct SpriteRenderer {
 
 impl SpriteRenderer {
     pub fn new(shady:&Shader) -> SpriteRenderer {
+
+        
         SpriteRenderer {
             shader:shady.to_owned(),
             quad_vao: 1
@@ -24,7 +29,13 @@ impl SpriteRenderer {
 
     }
 
-    pub fn init_render_data(&mut self) {
+    pub fn init_render_data(&mut self, width:f32, height:f32) {
+
+        let projection = glm::ortho(0.0, width, 0.0, height, -1.0, 1.0);
+        self.shader.use_program();
+        self.shader.set_int("sprite", 0);
+        self.shader.set_matrix4("projection", &projection);
+
         self.quad_vao = unsafe {
             
             let vertices:[f32; 24] = [
@@ -64,49 +75,20 @@ impl SpriteRenderer {
         };
     }
 
-    pub fn draw_sprite(&self, texture:Texture, position: glm::Vec2, size:glm::Vec2, rotate:f32, color:glm::Vec3) {
+    pub fn draw_sprite(&self, texture:Texture, transform:Transform2D, color:glm::Vec3) {
         unsafe  {
             self.shader.use_program();
-            let mut model = glm::Mat4::identity();
-            model = glm::translate(&mut model, &glm::vec3(position.x, position.y, 0.0));
             
-            /* 
-            model = glm::translate(&mut model, &glm::vec2_to_vec3(&size).scale(0.5));
-            model = glm::rotate(&mut model, rotate.to_radians(), &glm::vec3(0.0, 0.0, 1.0));
-            model = glm::translate(&mut model, &glm::vec2_to_vec3(&size).scale(-0.5));
-            */
-            model = glm::scale(&mut model, &glm::vec3(size.x, size.y, 1.0));
+            let model = transform.model_matrix;
 
             self.shader.set_matrix4("model", &model);
+          
             self.shader.set_vector3f_glm("spriteColor", color);
 
             
             
             gl::ActiveTexture(gl::TEXTURE0);
             texture.bind();
-            
-            gl::BindVertexArray(self.quad_vao);
-            gl::DrawArrays(gl::TRIANGLES, 0, 6);
-            gl::BindVertexArray(0);
-        } 
-    }
-
-    pub fn test_draw(&self, position: glm::Vec2, size:glm::Vec2) {
-        unsafe  {
-            self.shader.use_program();
-            let mut model = glm::Mat4::identity();
-            model = glm::translate(&mut model, &vec3(position.x, position.y, 0.0));
-            
-            /* 
-            model = glm::translate(&mut model, &glm::vec2_to_vec3(&size).scale(0.5));
-            model = glm::rotate(&mut model, rotate.to_radians(), &glm::vec3(0.0, 0.0, 1.0));
-            model = glm::translate(&mut model, &glm::vec2_to_vec3(&size).scale(-0.5));
-            */
-            model = glm::scale(&mut model, &vec3(size.x, size.y, 1.0));
-
-            self.shader.set_matrix4("model", &model);
-            self.shader.set_vector3f_glm("color", vec3(1.0, 1.0, 1.0));
-
             
             gl::BindVertexArray(self.quad_vao);
             gl::DrawArrays(gl::TRIANGLES, 0, 6);

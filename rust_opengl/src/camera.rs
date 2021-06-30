@@ -48,22 +48,22 @@ impl Camera {
         return look_at(&self.position, &(self.position + self.forward), &self.up);
     }
 
-    pub fn process_keyboard_input(&mut self, manager:InputManager, dt:f32) {
+    pub fn process_keyboard_input(&mut self, dt:f32) {
         let vel = self.move_speed * dt;
 
-        if manager.get_key_state(glfw::Key::W) {
+        if  InputManager::instance().get_key_state(glfw::Key::W) {
             self.position += self.forward * vel;
         } 
 
-        if manager.get_key_state(glfw::Key::S) {
+        if  InputManager::instance().get_key_state(glfw::Key::S) {
             self.position -= self.forward * vel;
         } 
 
-        if manager.get_key_state(glfw::Key::A) {
+        if  InputManager::instance().get_key_state(glfw::Key::A) {
             self.position -= self.right* vel;
         } 
 
-        if manager.get_key_state(glfw::Key::D) {
+        if  InputManager::instance().get_key_state(glfw::Key::D) {
             self.position += self.right* vel;
         }
     }

@@ -1,5 +1,7 @@
 extern crate nalgebra_glm as glm;
 use glm::{Vec3, Vec2};
+
+#[derive(Clone, Copy)]
 pub struct Vertex {
     position:Vec3,
     pub normal:Vec3,

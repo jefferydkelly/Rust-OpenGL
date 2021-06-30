@@ -1,44 +1,34 @@
 use crate::enemy::Enemy;
-use crate::glm::{Vec2, vec3, vec2};
-use crate::resource_manager::ResourceManager;
+use crate::glm::{Vec2, Vec3, vec3, vec2};
+use crate::transform2d::{self, Transform2D};
 use crate::texture::Texture;
 use crate::timer::Timer;
 use crate::sprite_renderer::SpriteRenderer;
-use crate::traits::{Updated, Rendered, Controlled};
+use crate::traits::{Updated, Rendered};
 use crate::input_manager::InputManager;
 use crate::collider::Collider;
 use crate::game_object::GameObject;
 
 use glfw::Key;
+#[derive(Clone, Copy)]
 pub struct Player {
-    position:Vec2,
-    velocity:Vec2,
-    size:Vec2,
+    transform:Transform2D,
+    velocity:Vec3,
     sprite: Texture,
     timer:Timer,
     pub collider:Collider,
-    bullets:Vec<GameObject>,
 }
 
 impl Player {
 
-    pub fn new(pos:Vec2, scale:Vec2, spr:Texture, bullet_spr:Texture) -> Self {
-
-        let mut lasers:Vec<GameObject> = Vec::new();
-        for i in 0..10 {
-            let mut laser = GameObject::new(vec2(0.0, 0.0), vec2(16.0, 32.0), 0.0, bullet_spr);
-            laser.set_velocity(vec2(0.0, -300.0));
-            laser.set_visibility(false);
-            lasers.push(laser);
-        }
+    pub fn new(pos:Vec3, scale:Vec3, spr:Texture, bullet_spr:Texture) -> Self {
+        let t = Transform2D::new(pos, 0.0, scale);
         Self {
-            position: pos,
-            size:scale,
+            transform:t,
             sprite:spr,
-            velocity:vec2(0.0, 0.0),
+            velocity:vec3(0.0, 0.0, 0.0),
             timer: Timer::new(),
-            collider: Collider::new(pos, scale),
-            bullets:lasers,
+            collider: Collider::new(pos, scale)
         }
     }
 
@@ -46,6 +36,7 @@ impl Player {
         self.timer.start_oneshot(0.25);
     }
 
+    /* 
     pub fn get_position(&self)->Vec2 {
         self.position
     }
@@ -53,24 +44,26 @@ impl Player {
     pub fn get_size(&self)-> Vec2 {
         self.size
     }
+    */
 
-    pub fn set_position(&mut self, pos:Vec2) {
-        self.position = pos;
+    pub fn set_position(&mut self, pos:Vec3) {
+        self.transform.update_translation(pos);
         self.collider.position = pos;
     }
-
+    /*
     pub fn fire(&mut self) {
+        let position:Vec3 = self.transform.get_translation();
         if self.timer.is_ready() {
             for i in 0 .. self.bullets.len() {
                 if !self.bullets[i].is_visible() {
-                    self.bullets[i].set_position(self.position + vec2(24.0, -50.0));
+                    self.bullets[i].set_position(position + vec3(24.0, -50.0, 0.0));
                     self.bullets[i].set_visibility(true);
                     break;
                 }
             }
             self.timer.reset();
         }
-    }
+    }*/
 
     pub fn check_collisions(&mut self, enemy:&mut Enemy) {
         if enemy.is_visible() {
@@ -78,54 +71,25 @@ impl Player {
                 enemy.set_visibility(false);
                 return;
             }
-
-            for b in &mut self.bullets {
-                if b.is_visible() && b.collider.check_collision(enemy.collider) {
-                    b.set_visibility(false);
-                    enemy.set_visibility(false);
-                    return;
-                }
-            }
         }
-
-        
     }
 }
 
 impl Updated for Player {
     fn update(&mut self, dt:f32) {
-        self.position += self.velocity.scale(dt);
-        self.collider.position = self.position;
-        self.timer.update(dt);
-
-        for i in 0 .. self.bullets.len() {
-            self.bullets[i].update(dt);
+       
+        if InputManager::instance().get_key_state(glfw::Key::A) {
+            self.transform.rotate(1.0);
         }
+        let mut position = self.transform.get_translation();
+        position += self.velocity.scale(dt);
+        self.collider.position = position;
+        self.timer.update(dt);
     }
 }
 
 impl Rendered for Player {
     fn render(&self, renderer:&SpriteRenderer) {
-        renderer.draw_sprite(self.sprite, self.position, self.size, 0.0, vec3(1.0, 1.0, 1.0));
-    
-        for i in 0 .. self.bullets.len() {
-            self.bullets[i].draw_sprite(renderer);
-        }
-    }
-}
-
-impl Controlled for Player {
-    fn receive_input(&mut self, manager:&InputManager) {
-        self.velocity = vec2(0.0, 0.0);
-
-        if manager.get_key_state(Key::A) {
-            self.velocity.x = -100.0;
-        } else if manager.get_key_state(Key::D) {
-            self.velocity.x = 100.0;
-        }
-
-        if manager.get_key_state(Key::Space) {
-            self.fire();
-        }
+        renderer.draw_sprite(self.sprite, self.transform, vec3(1.0, 1.0, 1.0));
     }
 }
