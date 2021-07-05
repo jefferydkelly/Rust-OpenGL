@@ -34,7 +34,7 @@ impl  ResourceManager {
         }
     }
 
-    pub fn instance()->&'static mut ResourceManager {
+    pub fn get_instance()->&'static mut ResourceManager {
         unsafe  {
             RESOURCE_MANAGER.get_mut().expect("Resource Manager has not been created")
         }

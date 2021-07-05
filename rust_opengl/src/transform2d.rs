@@ -27,9 +27,12 @@ impl Transform2D {
     }
 
     fn update_matrix(&mut self) {
+     
         let mut matty = Mat4::identity();
         matty = glm::translate(&matty, &self.translation);
-        matty = glm::rotate(&matty, self.rotation.to_radians(), &vec3(0.0, 0.0, 1.0));
+      
+        matty = glm::rotate(&matty, self.rotation, &vec3(0.0, 0.0, 1.0));
+        
         matty = glm::scale(&matty, &self.scale);
         self.model_matrix = matty;
     }

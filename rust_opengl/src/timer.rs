@@ -1,13 +1,26 @@
-use crate::traits::Updated;
+use core::f32;
 
+use crate::traits::Updated;
+use once_cell::sync::OnceCell;
+
+static mut TIMER_MANAGER:OnceCell<TimerManager> = OnceCell::new();
 struct TimerManager {
     timers:Vec<Timer>,
 }
 
 impl TimerManager {
-    pub fn new()->TimerManager {
-        TimerManager {
+    pub fn create_instance() {
+        let timmy = TimerManager {
             timers:Vec::new()
+        };
+        unsafe {
+            TIMER_MANAGER.set(timmy);
+        }
+    }
+
+    pub fn get_instance()->&'static mut TimerManager {
+        unsafe {
+            TIMER_MANAGER.get_mut().expect("Timer Manager has not been created")
         }
     }
 
@@ -32,14 +45,15 @@ pub enum TimerState {
 	STOPPED,
 	COMPLETED
 }
-#[derive(Clone, Copy)]
+
 pub struct Timer {
     tick_time:f32,
     elapsed_time:f32,
     infinite:bool,
     max_ticks:i32,
     times_ticked:i32,
-    state:TimerState
+    state:TimerState,
+    timed:Vec<Box<dyn Timed>>
 }
 
 impl Timer {
@@ -50,7 +64,8 @@ impl Timer {
             infinite:false,
             max_ticks: 0,
             times_ticked:0,
-            state:TimerState::UNSTARTED
+            state:TimerState::UNSTARTED,
+            timed:Vec::new()
         }
     }
 
@@ -71,7 +86,6 @@ impl Timer {
             self.elapsed_time = 0.0;
             self.infinite = true;
             self.state = TimerState::RUNNING;
-            println!("start!");
         }
         
     }
@@ -100,12 +114,21 @@ impl Timer {
     }
 
     pub fn tick(&mut self) {
+     
         self.times_ticked+=1;
         self.elapsed_time = 0.0;
+       
         if !self.infinite && self.times_ticked >= self.max_ticks {
             self.state = TimerState::COMPLETED;
+            for t in self.timed.iter_mut() {
+                t.on_complete();
+            }
         } else {
             self.state = TimerState::RUNNING;
+
+            for t in self.timed.iter_mut() {
+                t.on_tick();
+            }
         }
     }
 
@@ -117,6 +140,10 @@ impl Timer {
         self.elapsed_time = 0.0;
         self.times_ticked = 0;
         self.state = TimerState::RUNNING;
+    }
+
+    pub fn add_listener(&mut self, the_timed:Box<dyn Timed>) {
+        self.timed.push(the_timed);
     }
 }
 
@@ -131,4 +158,13 @@ impl Updated for Timer {
             }
          }
     }
+}
+
+pub trait Timed {
+
+    fn on_tick(&mut self);
+    fn on_complete(&mut self);
+    fn update_timer(&mut self, dt:f32);
+    fn start_timer(&mut self, time:f32, reps:i32);
+    
 }

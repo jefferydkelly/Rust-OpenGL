@@ -44,20 +44,20 @@ pub struct Game {
 impl Game {
     pub fn new(w:u32, h:u32)->Game {
    
-        let text_shader = ResourceManager::instance().load_shader("src/resources/shaders/textVertex.glsl", "src/resources/shaders/textFragment.glsl", "text");
+        let text_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/textVertex.glsl", "src/resources/shaders/textFragment.glsl", "text");
         let mut uim = UIManager::new(text_shader);
         let text= "#ScreenshotSaturday";
         let tex = TextBox::new(vec2(200.0, 300.0), text);
         uim.add_element(Box::new(tex));
 
-        let sprite_shader = ResourceManager::instance().load_shader("src/resources/shaders/spriteVertex.glsl", "src/resources/shaders/spriteFragment.glsl", "sprite");
+        let sprite_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/spriteVertex.glsl", "src/resources/shaders/spriteFragment.glsl", "sprite");
         let mut sprite_renderer = SpriteRenderer::new(&sprite_shader);
         sprite_renderer.init_render_data(800.0, 600.0);
         
         let mut my_sprites:Vec<Box<&Rendered>> = Vec::new();
-        let player_tex = ResourceManager::instance().load_texture("src/resources/textures/playerShip.png", "player");
-        let laser_tex = ResourceManager::instance().load_texture("src/resources/textures/laser.png", "laser");
-        let player = Player::new(vec3(400.0, 300.0, 0.0), vec3(50.0, 50.0, 1.0), player_tex, laser_tex);
+        let player_tex = ResourceManager::get_instance().load_texture("src/resources/textures/playerShip.png", "player");
+        let laser_tex = ResourceManager::get_instance().load_texture("src/resources/textures/laser.png", "laser");
+        let player = Player::new(vec3(400.0, 300.0, 0.0), vec3(50.0, 50.0, 1.0), player_tex);
 
         let mut objs:Vec<Box<&Updated>> = Vec::new();
         objs.push(Box::new(&player));

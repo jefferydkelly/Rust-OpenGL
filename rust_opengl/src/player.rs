@@ -1,8 +1,10 @@
+use core::f32;
+
 use crate::enemy::Enemy;
 use crate::glm::{Vec2, Vec3, vec3, vec2};
 use crate::transform2d::{self, Transform2D};
 use crate::texture::Texture;
-use crate::timer::Timer;
+use crate::timer::*;
 use crate::sprite_renderer::SpriteRenderer;
 use crate::traits::{Updated, Rendered};
 use crate::input_manager::InputManager;
@@ -10,31 +12,47 @@ use crate::collider::Collider;
 use crate::game_object::GameObject;
 
 use glfw::Key;
-#[derive(Clone, Copy)]
+
 pub struct Player {
     transform:Transform2D,
     velocity:Vec3,
     sprite: Texture,
-    timer:Timer,
+    can_fire:bool,
     pub collider:Collider,
+    timer_state:TimerState,
+    timer_reps: i32,
+    run_reps: i32,
+    timer_tick: f32,
+    timer_cur_time:f32
 }
 
 impl Player {
 
-    pub fn new(pos:Vec3, scale:Vec3, spr:Texture, bullet_spr:Texture) -> Self {
+    pub fn new(pos:Vec3, scale:Vec3, spr:Texture) -> Player {
         let t = Transform2D::new(pos, 0.0, scale);
-        Self {
+        
+        let mut playa = Player {
             transform:t,
             sprite:spr,
             velocity:vec3(0.0, 0.0, 0.0),
-            timer: Timer::new(),
-            collider: Collider::new(pos, scale)
-        }
+            can_fire: true,
+            collider: Collider::new(pos, scale),
+            timer_state: TimerState::READY,
+            timer_reps: 0,
+            run_reps: 0,
+            timer_tick: 0.0,
+            timer_cur_time: 0.0
+        };
+
+        playa
     }
 
-    pub fn init(&mut self) {
-        self.timer.start_oneshot(0.25);
+    fn reset(&mut self) {
+        self.can_fire = true;
     }
+   
+
+    
 
     /* 
     pub fn get_position(&self)->Vec2 {
@@ -50,20 +68,13 @@ impl Player {
         self.transform.update_translation(pos);
         self.collider.position = pos;
     }
-    /*
+    
     pub fn fire(&mut self) {
-        let position:Vec3 = self.transform.get_translation();
-        if self.timer.is_ready() {
-            for i in 0 .. self.bullets.len() {
-                if !self.bullets[i].is_visible() {
-                    self.bullets[i].set_position(position + vec3(24.0, -50.0, 0.0));
-                    self.bullets[i].set_visibility(true);
-                    break;
-                }
-            }
-            self.timer.reset();
+        if self.can_fire {
+            self.can_fire = false;
+            self.start_timer(0.25, 1);
         }
-    }*/
+    }
 
     pub fn check_collisions(&mut self, enemy:&mut Enemy) {
         if enemy.is_visible() {
@@ -79,12 +90,21 @@ impl Updated for Player {
     fn update(&mut self, dt:f32) {
        
         if InputManager::instance().get_key_state(glfw::Key::A) {
-            self.transform.rotate(1.0);
+            self.transform.rotate(dt);
+        } else if InputManager::instance().get_key_state(glfw::Key::D) {
+            self.transform.rotate(-dt);
         }
-        let mut position = self.transform.get_translation();
-        position += self.velocity.scale(dt);
-        self.collider.position = position;
-        self.timer.update(dt);
+        
+        if InputManager::instance().get_key_state(glfw::Key::Space) {
+            self.fire();
+        }
+
+        let rotation = self.transform.get_rotation() - 90.0;
+        let sin = rotation.sin();
+        let cos = rotation.cos();
+        let cen = vec3(400.0, 300.0, 0.0);
+        self.transform.update_translation(cen + vec3(cos, sin, 0.0) * 300.0);
+        self.update_timer(dt);
     }
 }
 
@@ -92,4 +112,42 @@ impl Rendered for Player {
     fn render(&self, renderer:&SpriteRenderer) {
         renderer.draw_sprite(self.sprite, self.transform, vec3(1.0, 1.0, 1.0));
     }
+}
+
+impl Timed for Player {
+    fn on_tick(&mut self) {
+        self.can_fire = true;
+    }
+
+    fn on_complete(&mut self) {
+        self.can_fire = true;
+        self.timer_state = TimerState::READY;
+    }
+
+    fn update_timer(&mut self, dt:f32) {
+        if self.timer_state == TimerState::RUNNING {
+            self.timer_cur_time += dt;
+            if self.timer_cur_time >= self.timer_tick {
+                self.run_reps += 1;
+                if self.run_reps >= self.timer_reps {
+                    self.on_complete();
+                } else {
+                    self.on_tick();
+                    self.timer_cur_time -= self.timer_tick;
+                }
+            }
+        }
+    }
+
+    fn start_timer(&mut self, time:f32, reps:i32) {
+        if self.timer_state == TimerState::READY {
+            self.timer_state = TimerState::RUNNING;
+            self.timer_reps = reps;
+            self.run_reps = 0;
+            self.timer_tick = time;
+            self.timer_cur_time = 0.0;
+        }
+    }
+
+
 }

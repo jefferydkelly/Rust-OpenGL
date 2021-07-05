@@ -1,7 +1,9 @@
 extern crate gl;
+use core::f32;
 use std::{ffi::c_void, path::Path};
 
 use image::{self, GenericImageView};
+use nalgebra_glm::{Vec3, vec3};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Texture {
@@ -60,5 +62,9 @@ impl Texture {
         unsafe {
             gl::BindTexture(gl::TEXTURE_2D, self.id);
         }
+    }
+
+    pub fn get_size(&self) -> Vec3 {
+        return vec3(self.width as f32, self.height as f32, 0.0);
     }
 }
