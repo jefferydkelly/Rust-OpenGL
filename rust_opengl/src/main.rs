@@ -5,47 +5,25 @@ extern crate nalgebra as na;
 extern crate nalgebra_glm as glm;
 extern crate gl;
 
-use audio_manager::AudioManager;
-use game::Game;
-use physics_manager::PhysicsManager;
 
-use crate::{input_manager::InputManager, resource_manager::ResourceManager};
+use engine::audio_manager::AudioManager;
+use engine::game::Game;
+use engine::physics_manager::PhysicsManager;
+
+use crate::engine::{input_manager::InputManager, resource_manager::ResourceManager};
 
 
 use self::glfw::{Context};
-use rapier3d::prelude::*;
 
 // settings
 const SCR_WIDTH: u32 = 800;
 const SCR_HEIGHT: u32 = 600;
 
-pub mod input_manager;
-pub mod texture;
-pub mod shader;
-pub mod resource_manager;
-pub mod sprite_renderer;
-pub mod game_object;
-pub mod game;
-pub mod traits;
+
 pub mod player;
-pub mod timer;
-pub mod ui_manager;
-pub mod text_renderer;
-pub mod collider;
 pub mod enemy;
-pub mod textbox;
-pub mod vertex;
-pub mod mesh;
-pub mod model;
-pub mod camera;
-pub mod lights;
-pub mod game_object3d;
 pub mod level;
-pub mod physics_manager;
-pub mod audio_manager;
-pub mod transform;
-pub mod transform2d;
-mod transform2D;
+pub mod engine;
 
 pub fn main() {
 
@@ -76,11 +54,12 @@ pub fn main() {
         //gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
     }
 
+    
     InputManager::create_instance();
     ResourceManager::create_instance();
     PhysicsManager::create_instance();
     AudioManager::create_instance();
-
+    
     let mut the_game = Game::new(SCR_WIDTH, SCR_HEIGHT);
     
     let mut last_frame =glfw.get_time();
@@ -91,13 +70,11 @@ pub fn main() {
         delta_time = (current_frame - last_frame) as f32;
         last_frame = current_frame;
 
+         
         the_game.process_events(&mut window, &events);
         the_game.update(delta_time);
         PhysicsManager::get_instance().step(delta_time);
        
-
-        //let ball_body = &rigid_body_set[ball_body_handle];
-        //println!("Ball altitude: {}", ball_body.translation().y);
         unsafe {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);

@@ -1,8 +1,10 @@
-use crate::texture::Texture;
-use glm::{Vec2,Vec3, vec2, vec3};
-use crate::collider::Collider;
-use crate::sprite_renderer::SpriteRenderer;
-use crate::transform2d::Transform2D;
+use crate::engine::texture::Texture;
+use glm::{Vec3, vec3};
+ 
+use crate::engine::collider::Collider;
+use crate::engine::sprite_renderer::SpriteRenderer;
+use crate::engine::transform2d::Transform2D;
+
 
 pub struct Enemy {
     transform:Transform2D,
@@ -25,11 +27,13 @@ impl Enemy {
         }
     }
 
+    
     pub fn draw_sprite(&self, renderer:&SpriteRenderer) {
         if self.is_visible {
             renderer.draw_sprite(self.sprite, self.transform, self.color);
         }
     }
+    
 
     pub fn update(&mut self, dt:f32) {
         if self.is_visible {

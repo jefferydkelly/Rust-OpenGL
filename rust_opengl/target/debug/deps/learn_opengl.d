@@ -1,32 +1,33 @@
-c:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\debug\deps\learn_opengl.exe: src\main.rs src\input_manager.rs src\texture.rs src\shader.rs src\resource_manager.rs src\sprite_renderer.rs src\game_object.rs src\game.rs src\traits.rs src\player.rs src\timer.rs src\ui_manager.rs src\text_renderer.rs src\collider.rs src\enemy.rs src\textbox.rs src\vertex.rs src\mesh.rs src\model.rs src\camera.rs src\lights.rs src\game_object3d.rs src\level.rs src\physics_manager.rs src\audio_manager.rs src\transform.rs src\transform2d.rs src\transform2D.rs
+c:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\debug\deps\learn_opengl.exe: src\main.rs src\player.rs src\enemy.rs src\level.rs src\engine\mod.rs src\engine\physics_manager.rs src\engine\audio_manager.rs src\engine\transform.rs src\engine\transform2d.rs src\engine\object_pool.rs src\engine\textbox.rs src\engine\vertex.rs src\engine\mesh.rs src\engine\model.rs src\engine\camera.rs src\engine\lights.rs src\engine\game_object3d.rs src\engine\timer.rs src\engine\ui_manager.rs src\engine\text_renderer.rs src\engine\collider.rs src\engine\input_manager.rs src\engine\texture.rs src\engine\shader.rs src\engine\resource_manager.rs src\engine\sprite_renderer.rs src\engine\game_object.rs src\engine\game.rs src\engine\traits.rs
 
-c:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\debug\deps\learn_opengl.d: src\main.rs src\input_manager.rs src\texture.rs src\shader.rs src\resource_manager.rs src\sprite_renderer.rs src\game_object.rs src\game.rs src\traits.rs src\player.rs src\timer.rs src\ui_manager.rs src\text_renderer.rs src\collider.rs src\enemy.rs src\textbox.rs src\vertex.rs src\mesh.rs src\model.rs src\camera.rs src\lights.rs src\game_object3d.rs src\level.rs src\physics_manager.rs src\audio_manager.rs src\transform.rs src\transform2d.rs src\transform2D.rs
+c:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\debug\deps\learn_opengl.d: src\main.rs src\player.rs src\enemy.rs src\level.rs src\engine\mod.rs src\engine\physics_manager.rs src\engine\audio_manager.rs src\engine\transform.rs src\engine\transform2d.rs src\engine\object_pool.rs src\engine\textbox.rs src\engine\vertex.rs src\engine\mesh.rs src\engine\model.rs src\engine\camera.rs src\engine\lights.rs src\engine\game_object3d.rs src\engine\timer.rs src\engine\ui_manager.rs src\engine\text_renderer.rs src\engine\collider.rs src\engine\input_manager.rs src\engine\texture.rs src\engine\shader.rs src\engine\resource_manager.rs src\engine\sprite_renderer.rs src\engine\game_object.rs src\engine\game.rs src\engine\traits.rs
 
 src\main.rs:
-src\input_manager.rs:
-src\texture.rs:
-src\shader.rs:
-src\resource_manager.rs:
-src\sprite_renderer.rs:
-src\game_object.rs:
-src\game.rs:
-src\traits.rs:
 src\player.rs:
-src\timer.rs:
-src\ui_manager.rs:
-src\text_renderer.rs:
-src\collider.rs:
 src\enemy.rs:
-src\textbox.rs:
-src\vertex.rs:
-src\mesh.rs:
-src\model.rs:
-src\camera.rs:
-src\lights.rs:
-src\game_object3d.rs:
 src\level.rs:
-src\physics_manager.rs:
-src\audio_manager.rs:
-src\transform.rs:
-src\transform2d.rs:
-src\transform2D.rs:
+src\engine\mod.rs:
+src\engine\physics_manager.rs:
+src\engine\audio_manager.rs:
+src\engine\transform.rs:
+src\engine\transform2d.rs:
+src\engine\object_pool.rs:
+src\engine\textbox.rs:
+src\engine\vertex.rs:
+src\engine\mesh.rs:
+src\engine\model.rs:
+src\engine\camera.rs:
+src\engine\lights.rs:
+src\engine\game_object3d.rs:
+src\engine\timer.rs:
+src\engine\ui_manager.rs:
+src\engine\text_renderer.rs:
+src\engine\collider.rs:
+src\engine\input_manager.rs:
+src\engine\texture.rs:
+src\engine\shader.rs:
+src\engine\resource_manager.rs:
+src\engine\sprite_renderer.rs:
+src\engine\game_object.rs:
+src\engine\game.rs:
+src\engine\traits.rs:

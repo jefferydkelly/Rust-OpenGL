@@ -1,15 +1,15 @@
 use core::f32;
 
 use crate::enemy::Enemy;
-use crate::glm::{Vec2, Vec3, vec3, vec2};
-use crate::transform2d::{self, Transform2D};
-use crate::texture::Texture;
-use crate::timer::*;
-use crate::sprite_renderer::SpriteRenderer;
-use crate::traits::{Updated, Rendered};
-use crate::input_manager::InputManager;
-use crate::collider::Collider;
-use crate::game_object::GameObject;
+use crate::glm::{Vec3, vec3};
+use crate::engine::transform2d::{Transform2D};
+use crate::engine::texture::Texture;
+use crate::engine::timer::*;
+use crate::engine::sprite_renderer::SpriteRenderer;
+use crate::engine::traits::{Updated, Rendered};
+use crate::engine::input_manager::InputManager;
+use crate::engine::collider::Collider;
+use crate::engine::game_object::GameObject;
 
 use glfw::Key;
 
@@ -72,7 +72,8 @@ impl Player {
     pub fn fire(&mut self) {
         if self.can_fire {
             self.can_fire = false;
-            self.start_timer(0.25, 1);
+            self.start_timer(2.0, 1);
+            println!("Fire!");
         }
     }
 
@@ -130,6 +131,7 @@ impl Timed for Player {
             if self.timer_cur_time >= self.timer_tick {
                 self.run_reps += 1;
                 if self.run_reps >= self.timer_reps {
+                    println!("I can fire again");
                     self.on_complete();
                 } else {
                     self.on_tick();

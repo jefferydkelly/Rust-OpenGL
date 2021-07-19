@@ -1,4 +1,5 @@
-use crate::{lights::*, model::Model, shader::Shader};
+
+use crate::engine::{lights::*, model::Model, shader::Shader};
 pub struct Level {
     models:Vec<Model>,
     dir_lights: Vec<DirectionalLight>,
