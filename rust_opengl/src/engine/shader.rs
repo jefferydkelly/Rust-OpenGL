@@ -177,9 +177,8 @@ impl Shader {
     }
 
     pub fn set_material(&self, name:&str, value:Material) {
-        self.set_vector3f_glm(&format!("{}{}", name,".ambient"), value.ambient);
-        self.set_vector3f_glm(&format!("{}{}", name,".diffuse"), value.diffuse);
-        self.set_vector3f_glm(&format!("{}{}", name,".specular"), value.specular);
+        self.set_int(&format!("{}{}", name,".diffuse"), 1);
+        self.set_int(&format!("{}{}", name,".specular"), 2);
         self.set_float(&format!("{}{}", name,".shininess"), value.shininess);
     }
 }

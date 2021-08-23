@@ -1,5 +1,6 @@
 
-use crate::engine::{lights::*, model::Model, shader::Shader};
+use crate::engine::{lights::*, model::Model, resource_manager::ResourceManager, shader::Shader};
+use glm::Mat4;
 pub struct Level {
     models:Vec<Model>,
     dir_lights: Vec<DirectionalLight>,
@@ -51,9 +52,28 @@ impl Level {
         shader
     }
 
-    pub fn draw(&self) {
+    pub fn update_lighting(&mut self, shader:&Shader) {
+        
+        shader.use_program();
+        for i in 0..self.dir_lights.len() {
+            shader.set_dir_light("dirLight", self.dir_lights[i]);
+        }
+
+        for i in 0..self.point_lights.len() {
+            shader.set_point_light(&format!("pointLights[{}]", i), self.point_lights[i]);
+        }
+
+        shader.set_int("numPointLights", self.point_lights.len() as i32);
+
+        for i in 0..self.spotlights.len() {
+            shader.set_spotlight("spotlight", self.spotlights[i]);
+        }
+        
+    }
+
+    pub fn draw(&mut self, shader:&Shader) {
         for i in 0..self.models.len() {
-            self.models[i].draw();
+            self.models[i].draw(shader);
         }
     }
 }

@@ -1,16 +1,21 @@
 use core::f32;
+use std::ffi::c_void;
+use std::path::Path;
 use std::{collections::HashMap};
 use std::fs::{self};
+use image::GenericImageView;
 use nalgebra_glm::{Vec3, vec3, Mat4};
 use once_cell::sync::OnceCell;
 use serde_json::Value;
 
-use crate::engine::model::Model;
+use crate::engine::model::{Material, Model};
 use crate::engine::shader::Shader;
 use crate::engine::texture::Texture;
 use crate::engine::lights::*;
 use crate::level::Level;
 use crate::engine::transform::Transform;
+
+use super::camera::Camera;
 
 static mut RESOURCE_MANAGER:OnceCell<ResourceManager> = OnceCell::new();
 
@@ -45,6 +50,10 @@ impl  ResourceManager {
             return self.shaders.get(name).unwrap();
         }
         panic!("There's no shader by that name!");
+    }
+
+    pub fn get_all_shaders(&mut self)->Vec<&Shader> {
+        return self.shaders.values().collect()
     }
 
     pub fn load_shader(&mut self, v_shader_src:&str, f_shader_src:&str, name:&str) -> Shader {
@@ -86,9 +95,34 @@ impl  ResourceManager {
         texture
     }
 
-    /*
-   
-    */
+    pub fn load_cube_map(&mut self, srcs:Vec<&str>, name:&str) -> u32 {
+        let mut cube_id:u32 = 0;
+        unsafe {
+            gl::GenTextures(1, &mut cube_id);
+            gl::BindTexture(gl::TEXTURE_CUBE_MAP, cube_id);
+            
+            for  i in 0..srcs.len() {
+                let src = srcs[i];
+                let mut img = image::open(&Path::new(src)).expect("Texture failed to load");
+                let format = gl::RGB;
+
+                let data = img.to_rgb8().into_raw();
+
+                gl::TexImage2D(gl::TEXTURE_CUBE_MAP_POSITIVE_X + (i as u32), 0, format as i32, img.width() as i32,
+                                img.height() as i32, 0, format, gl::UNSIGNED_BYTE, &data[0] as *const u8 as *const c_void);
+                
+            }
+
+            gl::TexParameteri(gl::TEXTURE_CUBE_MAP, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE as i32);
+                gl::TexParameteri(gl::TEXTURE_CUBE_MAP, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE as i32);
+                gl::TexParameteri(gl::TEXTURE_CUBE_MAP, gl::TEXTURE_WRAP_R, gl::CLAMP_TO_EDGE as i32);
+                
+                gl::TexParameteri(gl::TEXTURE_CUBE_MAP, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+                gl::TexParameteri(gl::TEXTURE_CUBE_MAP, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
+        }
+        
+        cube_id
+    }
 
     pub fn load_level(&mut self, path:&str) -> Level {
 
@@ -96,15 +130,20 @@ impl  ResourceManager {
         let code = fs::read_to_string(path).expect("Unable to load JSON");
         let v:Value = serde_json::from_str(&code).unwrap();
      
-        for val in v["models"].as_array().unwrap() {
-            
-            let texture = self.load_texture(val["texture"].as_str().unwrap(), val["name"].as_str().unwrap());
-            let vertex_src = val["shader"]["vertex"].as_str().unwrap();
-            let fragment_src = val["shader"]["fragment"].as_str().unwrap();
-            let shader_name = val["shader"]["name"].as_str().unwrap();
+        for val in v["shaders"].as_array().unwrap() { 
+            self.load_shader(val["vertex"].as_str().unwrap(), val["fragment"].as_str().unwrap(), val["name"].as_str().unwrap());
+        }
 
-            let shader = self.load_shader(vertex_src,fragment_src,shader_name);
-            let mut model = Model::new(val["path"].as_str().unwrap(), texture, shader);
+        for val in v["models"].as_array().unwrap() {
+            let shader_name = val["shader"].as_str().unwrap();
+            let shader = self.get_shader(shader_name);
+            
+            let mat = val["material"].as_object().unwrap();
+            
+            let shin = mat["shininess"].as_f64().unwrap() as f32;
+            let material:Material = Material::new(mat["diffuse"].as_str().unwrap(), mat["specular"].as_str().unwrap(), shin);
+            
+            let mut model = Model::new(val["path"].as_str().unwrap(), shader, material);
 
             let instances = val["instances"].as_array().unwrap();
             for inst in instances{

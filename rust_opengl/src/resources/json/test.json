@@ -1,259 +1,86 @@
 {
-     "models": [
+    "shaders": [
+        {
+            "name": "model",
+            "vertex": "src/resources/shaders/model.vs",
+            "fragment": "src/resources/shaders/model.fs"
+        }
+    ], 
+    "models": [
          {
             "name": "house",
-            "path": "src/resources/models/house02.obj",
-            "texture": "src/resources/textures/house02.png",
+            "path": "src/resources/models/rockLarge.obj",
+            "material": {
+                "diffuse": "src/resources/textures/rock.png",
+                "specular": "src/resources/textures/house02_specular.png",
+                "shininess": 32
+            },
+            "shader": "model",
             "instances": [
                 {
                     "position": {
-                        "x": 100.0,
-                        "y": -25.0,
-                        "z": 100.0
+                        "x": -2.0,
+                        "y": 1.5,
+                        "z": 0.0
                     },
                         "rotation": {
                         "x": 0.0,
-                        "y": 90.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }, {
+                    "position": {
+                        "x": 2.0,
+                        "y": 0.0,
+                        "z": 1.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                }, {
+                    "position": {
+                        "x": -1.0,
+                        "y": 0.0,
+                        "z": 2.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 60.0,
                         "z": 0.0
                     },
                     "scale": {
                         "x": 0.5,
                         "y": 0.5,
                         "z": 0.5
-                    }
-                }, {
-                    "position": {
-                        "x": 0.0,
-                        "y": -25.0,
-                        "z": 100.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": -90.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.5,
-                        "y": 0.5,
-                        "z": 0.5
-                    }
-                }
-            ]
-        },  {
-            "name": "straight road",
-            "path": "src/resources/models/tile01.obj",
-            "texture": "src/resources/textures/tile02.png",
-            "instances": [
-                {
-                    "position": {
-                        "x": 50.0,
-                        "y": -25.0,
-                        "z": 0.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 50.0,
-                        "y": -25.0,
-                        "z": 50.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 50.0,
-                        "y": -25.0,
-                        "z": 100.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 50.0,
-                        "y": -25.0,
-                        "z": 150.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }
-            ]
-        },  {
-            "name": "grass",
-            "path": "src/resources/models/tile01.obj",
-            "texture": "src/resources/textures/tile15.png",
-            "instances": [
-                {
-                    "position": {
-                        "x": 100.0,
-                        "y": -25.0,
-                        "z": 0.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 0.0,
-                        "y": -25.0,
-                        "z": 0.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 100.0,
-                        "y": -25.0,
-                        "z": 50.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 0.0,
-                        "y": -25.0,
-                        "z": 50.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                },  {
-                    "position": {
-                        "x": 100.0,
-                        "y": -25.0,
-                        "z": 100.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 0.0,
-                        "y": -25.0,
-                        "z": 100.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 100.0,
-                        "y": -25.0,
-                        "z": 150.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
-                    }
-                }, {
-                    "position": {
-                        "x": 0.0,
-                        "y": -25.0,
-                        "z": 150.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
                     }
                 }
             ]
         }, {
-            "name": "box",
-            "path": "src/resources/models/box01.obj",
-            "texture": "src/resources/textures/box01.png",
+            "name": "grass",
+            "path": "src/resources/models/road.obj",
+            "material": {
+                "diffuse": "src/resources/textures/grass.png",
+                "specular": "src/resources/textures/tile15_specular.png",
+                "shininess": 32
+            },
+            "shader": "model",
             "instances": [
                 {
                     "position": {
                         "x": 0.0,
-                        "y": 5.0,
+                        "y": -1.0,
                         "z": 0.0
                     },
                         "rotation": {
@@ -262,9 +89,9 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 0.25,
-                        "y": 0.25,
-                        "z": 0.25
+                        "x": 12.0,
+                        "y": 1.0,
+                        "z": 12.0
                     }
                 }
             ]
@@ -276,12 +103,12 @@
             "direction": {
                 "x": -0.2,
                 "y": -1.0,
-                "z": 0.3
+                "z": -0.3
             },
             "ambient": {
-                "x": 0.5,
-                "y": 0.5,
-                "z": 0.5
+                "x": 0.05,
+                "y": 0.05,
+                "z": 0.05
             },
             "diffuse": {
                 "x": 0.4,
@@ -397,6 +224,39 @@
             "constant": 1.0,
             "linear": 0.09,
             "quadratic": 0.032
+        },
+        {
+            "type": "spot",
+            "position": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": -3.0
+            },
+            "direction": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": -3.0
+            },
+            "ambient": { 
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": 0.0
+            },
+            "diffuse": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032,
+            "cutoff": 12.5,
+            "outerCutoff": 15.0
         }
     ]
 }

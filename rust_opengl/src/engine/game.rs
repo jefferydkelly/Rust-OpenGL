@@ -28,62 +28,67 @@ use crate::engine::ui_manager::UIManager;
 use crate::player::Player;
 use crate::engine::{input_manager::InputManager, resource_manager::ResourceManager, sprite_renderer::SpriteRenderer, traits::{Rendered, Updated}, model::Model};
 use glm::{Vec3, vec2, vec3, Mat4};
+use image::math;
+
+use crate::engine::shader::Shader;
+
+use super::model::Material;
+use super::resource_manager;
 
 
 pub struct Game {
     state:GameState,
     width: u32,
     height:u32,
-    ui:UIManager,
     cammie:Camera,
     first_mouse:bool,
-    renderer:SpriteRenderer,
-    player:Player
+    level:Level,
+    projection:Mat4
 }
 
 impl Game {
     pub fn new(w:u32, h:u32)->Game {
    
-        let text_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/textVertex.glsl", "src/resources/shaders/textFragment.glsl", "text");
-        let mut uim = UIManager::new(text_shader);
-        let text= "#ScreenshotSaturday";
-        let tex = TextBox::new(vec2(200.0, 300.0), text);
-        uim.add_element(Box::new(tex));
+        let mut levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
+        let projection: Mat4 = glm::perspective(4.0 / 3.0, 45.0, 0.1, 500.0);
 
-        let sprite_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/spriteVertex.glsl", "src/resources/shaders/spriteFragment.glsl", "sprite");
-        let mut sprite_renderer = SpriteRenderer::new(&sprite_shader);
-        sprite_renderer.init_render_data(800.0, 600.0);
-        
-        let mut my_sprites:Vec<Box<&Rendered>> = Vec::new();
-        let player_tex = ResourceManager::get_instance().load_texture("src/resources/textures/playerShip.png", "player");
-        let laser_tex = ResourceManager::get_instance().load_texture("src/resources/textures/laser.png", "laser");
-        let player = Player::new(vec3(400.0, 300.0, 0.0), vec3(50.0, 50.0, 1.0), player_tex);
-
-        let mut objs:Vec<Box<&Updated>> = Vec::new();
-        objs.push(Box::new(&player));
-        my_sprites.push(Box::new(&player));
-        Game {
+        for shader in ResourceManager::get_instance().get_all_shaders() {
+            shader.use_program();
+            shader.set_matrix4("projection", &projection);
+        }
+       
+        let the_game = Game {
             state: GameState::ACTIVE,
             width: w,
             height: h,
-            ui: uim,
             cammie: Camera::new(glm::vec3(0.0, 0.0, -50.0), glm::vec3(0.0, 1.0, 0.0), 90.0, 0.0),
             first_mouse: true,
-            renderer:sprite_renderer,
-            player:player
-        }
+            level: levy,
+            projection: projection
+        };
+
+        the_game
+        
     }
 
     pub fn update(&mut self, dt:f32) {
 
-        //self.cammie.process_keyboard_input(dt);
-        self.player.update(dt);
+        self.cammie.process_keyboard_input(dt);
+
+        //self.player.update(dt);
         //self.the_box.update();
     }
 
-    pub fn render(&mut self) {
+    pub fn render(&mut self, shader:&Shader) {
         
-        self.player.render(&self.renderer);
+        self.level.update_lighting(shader);
+        shader.set_matrix4("view", &self.cammie.get_view_matrix());
+        shader.set_vector3f_glm("viewPos", self.cammie.position);
+        shader.set_vector3f_glm("spotlight.position", self.cammie.position);
+        shader.set_vector3f_glm("spotlight.direction", self.cammie.forward);
+    
+        self.level.draw(shader);
+        //self.player.render(&self.renderer);
         //self.ui.render();
     }
 
@@ -126,5 +131,13 @@ impl Game {
         mouse_dif.y *= -1.0;
         self.cammie.process_mouse_movement(mouse_dif);
         InputManager::instance().update_mouse_position_glm(mouse_pos);
+    }
+
+    pub fn get_view_matrix(&self) -> Mat4 {
+        return self.cammie.get_view_matrix();
+    }
+
+    pub fn get_projection_matrix(&self) -> Mat4 {
+        return self.projection;
     }
 }

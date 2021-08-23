@@ -22,3 +22,4 @@ pub mod sprite_renderer;
 pub mod game_object;
 pub mod game;
 pub mod traits;
+pub mod skybox;

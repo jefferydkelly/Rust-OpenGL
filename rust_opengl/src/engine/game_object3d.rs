@@ -36,6 +36,6 @@ impl GameObject3D {
    }
 
    pub fn draw(&self) {
-       self.model.draw();
+       //self.model.draw();
    }
 }

@@ -66,10 +66,13 @@ impl Camera {
         if  InputManager::instance().get_key_state(glfw::Key::D) {
             self.position += self.right* vel;
         }
+
+        self.update_camera_vectors();
     }
 
     //TODO: Process Mouse Movement and Scroll
     pub fn process_mouse_movement(&mut self, offset:Vec2) {
+    
         let true_offset = offset.scale(self.mouse_sensitivity);
         
         self.yaw += true_offset.x;
