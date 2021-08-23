@@ -15,6 +15,13 @@ pub struct Camera {
 }
 
 impl Camera {
+    /*
+    Creates a new Camera object with the given information
+    pos - The position of the camera in world space
+    upw - The world's up vector
+    y - The starting yaw of the Camera
+    pit - The starting pitch of the Camera
+    */
     pub fn new(pos:Vec3, upw:Vec3, y:f32, pit:f32)-> Camera {
         let mut cammie = Camera {
             position:pos,
@@ -33,6 +40,10 @@ impl Camera {
         cammie
     }
 
+    /*
+    Creates the forward vector based on the current rotation of the camera 
+    and updates up and right vectors based on the result
+    */
     fn update_camera_vectors(&mut self) {
         let x = self.yaw.to_radians().cos() * self.pitch.to_radians().cos();
         let y = self.pitch.to_radians().sin();
@@ -44,10 +55,18 @@ impl Camera {
         self.up = cross(&self.right, &self.forward).normalize();
     }
 
+    /*
+    Provides the view matrix
+    Return - The view matrix
+    */
     pub fn get_view_matrix(&self) -> Mat4 {
         return look_at(&self.position, &(self.position + self.forward), &self.up);
     }
 
+    /* 
+    Processes keyboard input and turns it into camera movement.
+    dt - The time in seconds since the last update
+    */
     pub fn process_keyboard_input(&mut self, dt:f32) {
         let vel = self.move_speed * dt;
 
@@ -70,7 +89,10 @@ impl Camera {
         self.update_camera_vectors();
     }
 
-    //TODO: Process Mouse Movement and Scroll
+    /*
+    Adjusts the rotation of the camera based on mouse movement
+    offset - The movement of the mouse since the last calling of this function.
+    */
     pub fn process_mouse_movement(&mut self, offset:Vec2) {
     
         let true_offset = offset.scale(self.mouse_sensitivity);

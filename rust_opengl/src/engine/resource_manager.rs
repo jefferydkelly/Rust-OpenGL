@@ -27,6 +27,9 @@ pub struct ResourceManager {
 
 impl  ResourceManager {
     
+    /*
+    Creates the single instance of the Resource Manager.
+    */
     pub fn create_instance() {
         let many = ResourceManager {
             shaders: HashMap::new(),
@@ -39,12 +42,21 @@ impl  ResourceManager {
         }
     }
 
+    /*
+    Grants access to the current instance of Resource Manager
+    return - The Resource Manager singleton
+    */
     pub fn get_instance()->&'static mut ResourceManager {
         unsafe  {
             RESOURCE_MANAGER.get_mut().expect("Resource Manager has not been created")
         }
     }
 
+    /*
+    Gets the shader of the passed in name from the ResourceManager if it exists
+    name - The name of the shader used as a dictionary key
+    return - The shader of that name if it exists in the dictionary
+    */
     pub fn get_shader(&self, name:&str)->&Shader {
         if self.shaders.contains_key(name) {
             return self.shaders.get(name).unwrap();
@@ -52,16 +64,33 @@ impl  ResourceManager {
         panic!("There's no shader by that name!");
     }
 
+    /*
+    Returns a vector containing all of the shaders currently in the game
+    return - A vector of all shaders in the game
+    */
     pub fn get_all_shaders(&mut self)->Vec<&Shader> {
         return self.shaders.values().collect()
     }
 
+    /*
+    Loads a shader using the given files and inserts it into the Shaders Dictionary using the name as the key
+    v_shader_src - The path to the vertex shader file
+    f_shader_src - The path to the fragment shader file
+    name - The name of the shader to be used as its key in the shaders dictionary
+    return - The loaded shader
+    */
     pub fn load_shader(&mut self, v_shader_src:&str, f_shader_src:&str, name:&str) -> Shader {
         let shady = self.load_shader_from_file(v_shader_src, f_shader_src);
         self.shaders.insert(name.to_string(), shady);
         shady
     }
 
+    /*
+    Loads the shader from the given files and compiles it.
+    v_shader_src - The path to the vertex shader file
+    f_shader_src - The path to the fragment shader file
+    return - The loaded shader
+    */
     fn load_shader_from_file(&self, v_shader_src:&str, f_shader_src:&str) -> Shader {
         let vertex_code;
         let fragment_code;
@@ -75,11 +104,21 @@ impl  ResourceManager {
         shader
     }
 
+    /*
+    Gets the text from the given shader file
+    file - The path to the file containing the shader code
+    return - The text of the shader file
+    */
     fn read_shader_file(&self, file:&str) -> String {
         let code = fs::read_to_string(file).expect("Unable to load shader");
         code
     }
 
+    /*
+    Gets the texture of the passed in name from the ResourceManager if it exists
+    name - The name of the texture used as a dictionary key
+    return - The texture of that name if it exists in the dictionary
+    */
     pub fn get_texture(&mut self, name:&str) -> &Texture {
         if self.textures.contains_key(name) {
             return self.textures.get(name).unwrap();
@@ -88,6 +127,13 @@ impl  ResourceManager {
         panic!("That texture doesn't exist");
     }
 
+
+    /*
+    Loads a texture using the given file and inserts it into the textures dictionary using the name as the key
+    src - The path to the texture file
+    name - The name of the texture to be used as its key in the textures dictionary
+    return - The loaded texture
+    */
     pub fn load_texture(&mut self, src: &str, name:&str) -> Texture {
         let mut texture = Texture::new();
         texture.generate(src);
@@ -95,7 +141,13 @@ impl  ResourceManager {
         texture
     }
 
-    pub fn load_cube_map(&mut self, srcs:Vec<&str>, name:&str) -> u32 {
+    /*
+    Creates a cube map from the given faces
+    srcs - A vector of strings containing the paths to the faces of the cube map
+    name - The name of the cube map
+    return - The texture id of the cube map
+    */
+    pub fn load_cube_map(&self, srcs:Vec<&str>, name:&str) -> u32 {
         let mut cube_id:u32 = 0;
         unsafe {
             gl::GenTextures(1, &mut cube_id);
@@ -103,7 +155,7 @@ impl  ResourceManager {
             
             for  i in 0..srcs.len() {
                 let src = srcs[i];
-                let mut img = image::open(&Path::new(src)).expect("Texture failed to load");
+                let img = image::open(&Path::new(src)).expect("Texture failed to load");
                 let format = gl::RGB;
 
                 let data = img.to_rgb8().into_raw();
@@ -124,6 +176,11 @@ impl  ResourceManager {
         cube_id
     }
 
+    /*
+    Loads the given json file and turns it into a Level object with lighting, shaders and models
+    path - The path to the json file containing the Level info
+    return - A Level object containing all the loaded information
+    */
     pub fn load_level(&mut self, path:&str) -> Level {
 
         let mut level = Level::new();
@@ -204,6 +261,12 @@ impl  ResourceManager {
        
     }
 
+    /*
+    Parses a 3-dimensional vector from the given json
+    val - The json to be parsed
+    convert - Whether the values should be converted to radians or not
+    return - The 3-dimensional vector created from the json
+    */
     fn parse_vec3(&self, val:Value, convert:bool)->Vec3 {
         let x = val["x"].as_f64().unwrap() as f32;
         let y = val["y"].as_f64().unwrap() as f32;

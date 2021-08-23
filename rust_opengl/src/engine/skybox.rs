@@ -8,7 +8,7 @@ use std::{ffi::c_void, mem, ptr};
 
 use gl::types::GLsizei;
 
-use super::{resource_manager::ResourceManager, shader::Shader};
+use super::{resource_manager::ResourceManager};
 
 pub struct Skybox {
     id:u32,
@@ -16,6 +16,11 @@ pub struct Skybox {
 }
 
 impl Skybox {
+
+    /*
+    Creates a new Skybox object from the given images
+    srcs - A Vector of strings containing the filepaths for the six faces of the skybox
+    */
     pub fn new(srcs:Vec<&str>) -> Self {
 
         let the_id = ResourceManager::get_instance().load_cube_map(srcs, "Skybox");
@@ -82,6 +87,9 @@ impl Skybox {
         }
     }
 
+    /*
+    Renders the Skybox
+    */
     pub fn render(&self) {
         unsafe {
             gl::DepthFunc(gl::LEQUAL);
