@@ -47,6 +47,12 @@ pub struct Game {
 }
 
 impl Game {
+    /*
+    Creates a new game object
+    w - The width of the screen at the start of the game
+    h - The height of the screen at the start of the game
+    return - The game object
+    */
     pub fn new(w:u32, h:u32)->Game {
    
         let mut levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
@@ -68,9 +74,13 @@ impl Game {
         };
 
         the_game
-        
     }
 
+
+    /*
+    Updates everything connected to the Game that needs it.
+    dt - The time in seconds since the last update.
+    */
     pub fn update(&mut self, dt:f32) {
 
         self.cammie.process_keyboard_input(dt);
@@ -79,6 +89,10 @@ impl Game {
         //self.the_box.update();
     }
 
+    /*
+    Renders the game using the given shader
+    shader - The Shader to use when rendering the scene.
+    */
     pub fn render(&mut self, shader:&Shader) {
         
         self.level.update_lighting(shader);
@@ -92,6 +106,11 @@ impl Game {
         //self.ui.render();
     }
 
+    /*
+    Processes the events passed in
+    window - A reference to the currently active window
+    events - A list of events that have occurred
+    */
     pub fn process_events(&mut self, window: &mut glfw::Window, events: &Receiver<(f64, glfw::WindowEvent)>) {
         for (_, event) in glfw::flush_messages(events) {
             match event {
@@ -105,6 +124,12 @@ impl Game {
         }
     }
     
+    /*
+    Processes keyboard based events
+    window - A reference to the currently active window
+    key - The key the action was performed on
+    action - The action performed on the key
+    */
     fn process_keyboard_events(&mut self, window: &mut glfw::Window, key:glfw::Key, action: glfw::Action) {
         if key == Key::Escape && action == Action::Press {
             window.set_should_close(true)
@@ -119,6 +144,11 @@ impl Game {
         }
     }
 
+    /*
+    Processes mouse mvement and scrolling as they occur
+    xpos - The current horizontal position of the mouse
+    ypos - The current vertical position of the mouse
+    */
     fn process_mouse_events(&mut self, xpos:f64, ypos:f64) {
         
         let mouse_pos = vec2(xpos as f32, ypos as f32);
@@ -133,10 +163,18 @@ impl Game {
         InputManager::instance().update_mouse_position_glm(mouse_pos);
     }
 
+    /*
+    Returns the view matrix for outside use
+    return - The camera's view matrix
+    */
     pub fn get_view_matrix(&self) -> Mat4 {
         return self.cammie.get_view_matrix();
     }
 
+    /*
+    Returns the projection matrix for outside use
+    return - The projection matrix
+    */
     pub fn get_projection_matrix(&self) -> Mat4 {
         return self.projection;
     }

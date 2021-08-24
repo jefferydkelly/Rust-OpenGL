@@ -21,6 +21,10 @@ pub struct Texture {
 
 impl Texture {
 
+    /*
+    Creates a new Texture object
+    return - default Texture object
+    */
     pub fn new()->Self {
         Self {
             width: 0,
@@ -36,6 +40,10 @@ impl Texture {
         }
     }
 
+    /*
+    Fills out the information for the texture based on the given file string
+    file - a string containing the path to the texture file
+    */
     pub fn generate(&mut self, file:&str) {
         unsafe {
             gl::GenTextures(1, &mut self.id);
@@ -58,12 +66,19 @@ impl Texture {
         }
     }
 
+    /*
+    Binds the texture to the current active texture slot
+    */
     pub fn bind(&self) {
         unsafe {
             gl::BindTexture(gl::TEXTURE_2D, self.id);
         }
     }
 
+    /*
+    Give the size of the Texture
+    return - A Vec3 containing the size of the texture.  Z is always set to 0.
+    */
     pub fn get_size(&self) -> Vec3 {
         return vec3(self.width as f32, self.height as f32, 0.0);
     }

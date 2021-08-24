@@ -217,7 +217,9 @@ pub fn main() {
             gl::ActiveTexture(gl::TEXTURE0);
             gl::BindTexture(gl::TEXTURE_2D, depth_map);
             
+            gl::CullFace(gl::FRONT);
             the_game.render(&model_shader);
+            gl::CullFace(gl::BACK);
 
             sky_shader.use_program();
             let mut skyview = the_game.get_view_matrix();
