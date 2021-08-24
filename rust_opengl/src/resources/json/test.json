@@ -258,5 +258,13 @@
             "cutoff": 12.5,
             "outerCutoff": 15.0
         }
+    ],
+    "skybox": [
+        "src/resources/textures/skybox/right.jpg",
+        "src/resources/textures/skybox/left.jpg",
+        "src/resources/textures/skybox/top.jpg",
+        "src/resources/textures/skybox/bottom.jpg",
+        "src/resources/textures/skybox/front.jpg",
+        "src/resources/textures/skybox/back.jpg"
     ]
 }

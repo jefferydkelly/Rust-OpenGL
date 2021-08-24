@@ -13,27 +13,18 @@ extern crate gl;
 use self::gl::types::*;
 
 use core::f32;
-use std::{sync::mpsc::Receiver, mem, ptr};
+use std::{sync::mpsc::Receiver, mem, ptr, ffi::c_void};
 use crate::engine::camera::Camera;
-use crate::engine::game_object::GameObject;
-use crate::engine::game_object3d::GameObject3D;
+
+use crate::engine::resource_manager::ResourceManager;
 use crate::level::Level;
-use crate::engine::lights::{DirectionalLight, PointLight, Spotlight};
-use crate::engine::physics_manager::PhysicsManager;
-use crate::engine::text_renderer::TextRenderer;
-use crate::enemy::Enemy;
-use crate::engine::textbox::TextBox;
-use crate::engine::transform::Transform;
-use crate::engine::ui_manager::UIManager;
-use crate::player::Player;
-use crate::engine::{input_manager::InputManager, resource_manager::ResourceManager, sprite_renderer::SpriteRenderer, traits::{Rendered, Updated}, model::Model};
-use glm::{Vec3, vec2, vec3, Mat4};
-use image::math;
+use glm::{vec2, Mat4};
+use nalgebra_glm::{Vec2, vec3};
 
 use crate::engine::shader::Shader;
 
-use super::model::Material;
-use super::resource_manager;
+use super::camera;
+use super::input_manager::InputManager;
 
 
 pub struct Game {
@@ -43,7 +34,17 @@ pub struct Game {
     cammie:Camera,
     first_mouse:bool,
     level:Level,
-    projection:Mat4
+    projection:Mat4,
+    model_shader:Shader,
+    screen_shader:Shader,
+    depth_shader:Shader,
+    skybox_shader:Shader,
+    frame_buffer:u32,
+    quad_vao:u32,
+    texture_color_buffer:u32,
+    depth_map_buffer:u32,
+    shadow_map:u32,
+    shadow_size:Vec2
 }
 
 impl Game {
@@ -57,12 +58,21 @@ impl Game {
    
         let mut levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
         let projection: Mat4 = glm::perspective(4.0 / 3.0, 45.0, 0.1, 500.0);
-
-        for shader in ResourceManager::get_instance().get_all_shaders() {
-            shader.use_program();
-            shader.set_matrix4("projection", &projection);
-        }
        
+        let model_shader = ResourceManager::get_instance().get_shader("model").to_owned();
+        model_shader.use_program();
+        model_shader.set_int("shadowMap", 0);
+        model_shader.set_matrix4("projection", &projection);
+        
+        let screen_shader= ResourceManager::get_instance().load_shader("src/resources/shaders/buffer.vs", "src/resources/shaders/buffers.fs", "screen");
+        screen_shader.use_program();
+        screen_shader.set_int("screenTexture", 0);
+
+        let depth_shader= ResourceManager::get_instance().load_shader("src/resources/shaders/shadow.vs", "src/resources/shaders/shadow.fs", "shadow");
+        let sky_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/skybox.vs", "src/resources/shaders/skybox.fs", "skybox");
+        sky_shader.use_program();
+        sky_shader.set_matrix4("projection", &projection);
+
         let the_game = Game {
             state: GameState::ACTIVE,
             width: w,
@@ -70,7 +80,17 @@ impl Game {
             cammie: Camera::new(glm::vec3(0.0, 0.0, -50.0), glm::vec3(0.0, 1.0, 0.0), 90.0, 0.0),
             first_mouse: true,
             level: levy,
-            projection: projection
+            projection: projection,
+            model_shader: model_shader,
+            screen_shader: screen_shader,
+            depth_shader: depth_shader,
+            skybox_shader: sky_shader,
+            frame_buffer:0,
+            quad_vao:0,
+            texture_color_buffer:0,
+            depth_map_buffer:0,
+            shadow_map:0,
+            shadow_size: vec2(0.0, 0.0)
         };
 
         the_game
@@ -87,21 +107,82 @@ impl Game {
 
         //self.player.update(dt);
         //self.the_box.update();
+
+        self.level.update_lighting(&self.model_shader);
+        self.model_shader.set_matrix4("view", &self.cammie.get_view_matrix());
+        self.model_shader.set_vector3f_glm("viewPos", self.cammie.position);
+        self.model_shader.set_vector3f_glm("spotlight.position", self.cammie.position);
+        self.model_shader.set_vector3f_glm("spotlight.direction", self.cammie.forward);
     }
 
     /*
     Renders the game using the given shader
     shader - The Shader to use when rendering the scene.
     */
-    pub fn render(&mut self, shader:&Shader) {
-        
-        self.level.update_lighting(shader);
-        shader.set_matrix4("view", &self.cammie.get_view_matrix());
-        shader.set_vector3f_glm("viewPos", self.cammie.position);
-        shader.set_vector3f_glm("spotlight.position", self.cammie.position);
-        shader.set_vector3f_glm("spotlight.direction", self.cammie.forward);
+    pub fn render(&mut self) {
+        unsafe {
+        gl::ClearColor(0.1, 0.1, 0.1, 1.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+            
+            
+            //Configure shaders and matrices
+            let (near_plane, far_plane) = (1.0, 7.5);
+            let light_pos = vec3(-2.0, 4.0, -1.0);
+            let light_projection = glm::ortho(-10.0, 10.0, -10.0, 10.0, near_plane, far_plane);
+            let light_view = glm::look_at(&light_pos, &vec3(0.0, 0.0, 0.0), &vec3(0.0, 1.0, 0.0));
+            let light_space_matrix = light_projection * light_view;
+            
+            
+            self.depth_shader.use_program();
+            self.depth_shader.set_matrix4("lightSpaceMatrix", &light_space_matrix);
+            
+            gl::Viewport(0, 0, self.shadow_size.x as i32, self.shadow_size.y as i32);
+            gl::BindFramebuffer(gl::FRAMEBUFFER, self.depth_map_buffer);
+            gl::Clear(gl::DEPTH_BUFFER_BIT);
+            gl::CullFace(gl::FRONT);
+            self.level.draw(&self.depth_shader);
+            gl::CullFace(gl::BACK);
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, self.frame_buffer);
+
+            gl::ClearColor(0.2, 0.3, 0.3, 1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+            
+            gl::Viewport(0,0, self.width as i32, self.height as i32);
+
+            self.model_shader.use_program();
+            self.model_shader.set_vector3f_glm("lightPos", light_pos);
+            self.model_shader.set_matrix4("lightSpaceMatrix", &light_space_matrix);
+            gl::ActiveTexture(gl::TEXTURE0);
+            gl::BindTexture(gl::TEXTURE_2D, self.shadow_map);
+            
+            gl::CullFace(gl::FRONT);
+            self.level.draw(&self.model_shader);
+            gl::CullFace(gl::BACK);
+
+            self.skybox_shader.use_program();
+            let skyview = glm::mat3_to_mat4(&glm::mat4_to_mat3(&self.cammie.get_view_matrix()));
+            self.skybox_shader.set_matrix4("view", &skyview);
+            self.skybox_shader.set_matrix4("projection", &self.projection);
+            self.skybox_shader.set_int("skybox", 0);
+            self.level.draw_skybox();
+            
+            
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+
+            gl::ClearColor(1.0, 1.0, 1.0, 1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+
+            self.screen_shader.use_program();
+            gl::BindVertexArray(self.quad_vao);
+            
+            
+            gl::ActiveTexture(gl::TEXTURE0);
+            gl::BindTexture(gl::TEXTURE_2D, self.texture_color_buffer);
+            gl::DrawArrays(gl::TRIANGLES, 0, 6);
+        }
     
-        self.level.draw(shader);
+        
         //self.player.render(&self.renderer);
         //self.ui.render();
     }
@@ -177,5 +258,101 @@ impl Game {
     */
     pub fn get_projection_matrix(&self) -> Mat4 {
         return self.projection;
+    }
+
+    pub fn resize_window(&mut self, size:Vec2) {
+        self.width = size.x as u32;
+        self.height = size.y as u32;
+    }
+
+    pub fn initialize_render_data(&mut self) {
+
+        let quad_vertices:[f32;24] = [
+            -1.0, 1.0, 0.0, 1.0,
+            -1.0, -1.0, 0.0, 0.0,
+            1.0, -1.0, 1.0, 0.0,
+            
+            -1.0, 1.0, 0.0, 1.0,
+            1.0, -1.0, 1.0, 0.0,
+            1.0, 1.0, 1.0, 1.0
+        ];
+    
+        let mut fbo:u32 = 0;
+        let mut quad_vao:u32 = 0;
+        let mut tex_color_buffer:u32 = 0;
+        
+        let mut depth_map_fbo:u32 = 0;
+        let (shadow_width, shadow_height) = (1024, 1024);
+        let mut depth_map:u32 = 0;
+
+        unsafe {
+            gl::GenFramebuffers(1, &mut fbo);
+            gl::BindFramebuffer(gl::FRAMEBUFFER, fbo);
+            
+            
+            gl::GenTextures(1, &mut tex_color_buffer);
+            gl::BindTexture(gl::TEXTURE_2D, tex_color_buffer);
+            gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGB as i32, self.width as i32, self.height as i32, 0, gl::RGB, gl::UNSIGNED_BYTE, ptr::null());
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
+            gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::COLOR_ATTACHMENT0, gl::TEXTURE_2D, tex_color_buffer, 0);
+
+            let mut rbo:u32 = 0;
+            gl::GenRenderbuffers(1, &mut rbo);
+            gl::BindRenderbuffer(gl::RENDERBUFFER, rbo);
+            gl::RenderbufferStorage(gl::RENDERBUFFER, gl::DEPTH24_STENCIL8, self.width as i32, self.height as i32);
+            //gl::BindRenderbuffer(gl::RENDERBUFFER, 0);
+
+            gl::FramebufferRenderbuffer(gl::FRAMEBUFFER, gl::DEPTH_STENCIL_ATTACHMENT, gl::RENDERBUFFER, rbo);
+
+            if gl::CheckFramebufferStatus(gl::FRAMEBUFFER) != gl::FRAMEBUFFER_COMPLETE {
+                println!("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+            }
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+
+            gl::GenVertexArrays(1, &mut quad_vao);
+            let mut quad_vbo:u32 = 0;
+            gl::GenBuffers(1, &mut quad_vbo);
+
+            gl::BindVertexArray(quad_vao);
+            gl::BindBuffer(gl::ARRAY_BUFFER, quad_vbo);
+            gl::BufferData(gl::ARRAY_BUFFER, (mem::size_of::<f32>() * quad_vertices.len()) as isize, &quad_vertices[0] as *const f32 as *const c_void, gl::STATIC_DRAW);
+            
+            gl::EnableVertexAttribArray(0);
+            gl::VertexAttribPointer(0, 4, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as GLsizei, ptr::null());
+        
+            gl::GenFramebuffers(1, &mut depth_map_fbo);
+            
+            
+            gl::GenTextures(1, &mut depth_map);
+            gl::BindTexture(gl::TEXTURE_2D, depth_map);
+            gl::TexImage2D(gl::TEXTURE_2D, 0, gl::DEPTH_COMPONENT as i32, shadow_width, shadow_height, 0, gl::DEPTH_COMPONENT, gl::FLOAT, ptr::null());
+
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+        
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
+        
+            let border_color:[f32;4] = [1.0, 1.0, 1.0, 1.0];
+            gl::TextureParameterfv(gl::TEXTURE_2D, gl::TEXTURE_BORDER_COLOR, &border_color[0]);
+
+
+
+            gl::BindFramebuffer(gl::FRAMEBUFFER, depth_map_fbo);
+            gl::FramebufferTexture2D(gl::FRAMEBUFFER, gl::DEPTH_ATTACHMENT, gl::TEXTURE_2D, depth_map, 0);
+            gl::DrawBuffer(gl::NONE);
+            gl::ReadBuffer(gl::NONE);
+            gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
+        
+        }
+
+        self.frame_buffer = fbo;
+        self.depth_map_buffer = depth_map_fbo;
+        self.shadow_map = depth_map;
+        self.texture_color_buffer = tex_color_buffer;
+        self.quad_vao = quad_vao;
+        self.shadow_size = vec2(shadow_width as f32, shadow_height as f32);
     }
 }

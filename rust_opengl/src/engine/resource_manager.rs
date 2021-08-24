@@ -16,6 +16,7 @@ use crate::level::Level;
 use crate::engine::transform::Transform;
 
 use super::camera::Camera;
+use super::skybox::Skybox;
 
 static mut RESOURCE_MANAGER:OnceCell<ResourceManager> = OnceCell::new();
 
@@ -183,9 +184,17 @@ impl  ResourceManager {
     */
     pub fn load_level(&mut self, path:&str) -> Level {
 
-        let mut level = Level::new();
         let code = fs::read_to_string(path).expect("Unable to load JSON");
         let v:Value = serde_json::from_str(&code).unwrap();
+
+        let mut faces = Vec::new();
+        for face in v["skybox"].as_array().unwrap() {
+            faces.push(face.as_str().unwrap());
+        }
+    
+        let the_box = Skybox::new(faces);
+        let mut level = Level::new(the_box);
+        
      
         for val in v["shaders"].as_array().unwrap() { 
             self.load_shader(val["vertex"].as_str().unwrap(), val["fragment"].as_str().unwrap(), val["name"].as_str().unwrap());

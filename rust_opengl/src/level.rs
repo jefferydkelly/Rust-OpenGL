@@ -1,20 +1,22 @@
 
-use crate::engine::{lights::*, model::Model, resource_manager::ResourceManager, shader::Shader};
+use crate::engine::{lights::*, model::Model, resource_manager::ResourceManager, shader::Shader, skybox::Skybox};
 use glm::Mat4;
 pub struct Level {
     models:Vec<Model>,
     dir_lights: Vec<DirectionalLight>,
     point_lights: Vec<PointLight>,
-    spotlights: Vec<Spotlight>
+    spotlights: Vec<Spotlight>,
+    skybox: Skybox
 }
 
 impl Level {
-    pub fn new() -> Self {
+    pub fn new(the_box:Skybox) -> Self {
         Self {
             models: Vec::new(),
             dir_lights: Vec::new(),
             point_lights: Vec::new(),
-            spotlights: Vec::new()
+            spotlights: Vec::new(),
+            skybox:the_box
         }
     }
 
@@ -75,5 +77,9 @@ impl Level {
         for i in 0..self.models.len() {
             self.models[i].draw(shader);
         }
+    }
+
+    pub fn draw_skybox(&self) {
+        self.skybox.render();
     }
 }
