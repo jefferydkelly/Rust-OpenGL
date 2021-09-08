@@ -1,6 +1,8 @@
 extern crate gl;
 use gl::types::*;
+use na::storage::CStride;
 use core::f32;
+use std::os::raw::c_char;
 use std::{ffi::CString, ptr, str};
 extern crate nalgebra_glm as glm;
 use crate::engine::lights::*;
@@ -59,6 +61,46 @@ impl Shader {
             self.check_compile_errors(self.id, "Program");
 
             gl::DeleteShader(vertex_shader);
+            gl::DeleteShader(fragment_shader);
+        }
+
+    }
+
+     /*
+    Compiles the vertex and fragment shader from the code passed in and reports any compilation errors to the user
+    vertex_shader_source - The text of the vertex shader code
+    fragment_shader_source - The text of the fragment shader code
+    */
+    pub fn compile_with_geometry(&mut self, vertex_shader_source:&str, fragment_shader_source:&str, geometry_shader_source:&str) {
+        unsafe {
+            let vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
+            let c_str_vert = CString::new(vertex_shader_source.as_bytes()).unwrap();
+            gl::ShaderSource(vertex_shader, 1, &c_str_vert.as_ptr(), ptr::null());
+            gl::CompileShader(vertex_shader);
+            self.check_compile_errors(vertex_shader, "Vertex");
+            
+
+            let geometry_shader = gl::CreateShader(gl::GEOMETRY_SHADER);
+            let c_str_geo = CString::new(geometry_shader_source.as_bytes()).unwrap();
+            gl::ShaderSource(geometry_shader, 1, &c_str_geo.as_ptr(), ptr::null());
+            gl::CompileShader(geometry_shader);
+            self.check_compile_errors(geometry_shader, "Geometry");
+
+            let fragment_shader = gl::CreateShader(gl::FRAGMENT_SHADER);
+            let c_str_frag = CString::new(fragment_shader_source.as_bytes()).unwrap();
+            gl::ShaderSource(fragment_shader, 1, &c_str_frag.as_ptr(), ptr::null());
+            gl::CompileShader(fragment_shader);
+            self.check_compile_errors(fragment_shader, "Fragment");
+
+            self.id = gl::CreateProgram();
+            gl::AttachShader(self.id, vertex_shader);
+            gl::AttachShader(self.id, geometry_shader);
+            gl::AttachShader(self.id, fragment_shader);
+            gl::LinkProgram(self.id);
+            self.check_compile_errors(self.id, "Program");
+
+            gl::DeleteShader(vertex_shader);
+            gl::DeleteShader(geometry_shader);
             gl::DeleteShader(fragment_shader);
         }
 
@@ -270,6 +312,14 @@ impl Shader {
         self.set_int(&format!("{}{}", name,".diffuse"), 1);
         self.set_int(&format!("{}{}", name,".specular"), 2);
         self.set_float(&format!("{}{}", name,".shininess"), value.shininess);
+    }
+
+    pub fn set_uniform_block(&self, name:&str, loc:u32) {
+        unsafe {
+            let cs = CString::new(name).unwrap();
+            let ind:u32 = gl::GetUniformBlockIndex(self.id, cs.as_ptr());
+            gl::UniformBlockBinding(self.id, ind, loc);
+        }
     }
 }
 

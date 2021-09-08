@@ -52,19 +52,19 @@ impl Mesh {
             gl::BindVertexArray(self.vao);
             
             gl::BindBuffer(gl::ARRAY_BUFFER, self.vbo);
-            gl::BufferData(gl::ARRAY_BUFFER, (self.vertices.len() * std::mem::size_of::<Vertex>()) as GLsizeiptr, &self.vertices[0] as *const Vertex as *const c_void, gl::STATIC_DRAW);
+            gl::BufferData(gl::ARRAY_BUFFER, (self.vertices.len() * std::mem::size_of::<Vertex>()) as GLsizeiptr, &self.vertices[0] as *const Vertex as *const GLvoid, gl::STATIC_DRAW);
         
             gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self.ebo);
-            gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, (self.indices.len() * std::mem::size_of::<u32>()) as GLsizeiptr, &self.indices[0] as *const u32 as *const c_void, gl::STATIC_DRAW);
+            gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, (self.indices.len() * std::mem::size_of::<u32>()) as GLsizeiptr, &self.indices[0] as *const u32 as *const GLvoid, gl::STATIC_DRAW);
 
             gl::EnableVertexAttribArray(0);
             gl::VertexAttribPointer(0, 3, gl::FLOAT, gl::FALSE, std::mem::size_of::<Vertex>() as GLsizei, ptr::null());
 
             gl::EnableVertexAttribArray(1);
-            gl::VertexAttribPointer(1, 3, gl::FLOAT, gl::FALSE, std::mem::size_of::<Vertex>() as GLsizei, offset_of!(Vertex, normal) as *const c_void);
+            gl::VertexAttribPointer(1, 3, gl::FLOAT, gl::FALSE, std::mem::size_of::<Vertex>() as GLsizei, offset_of!(Vertex, normal) as *const GLvoid);
 
             gl::EnableVertexAttribArray(2);
-            gl::VertexAttribPointer(2, 2, gl::FLOAT, gl::FALSE, std::mem::size_of::<Vertex>() as GLsizei, offset_of!(Vertex, tex_coords) as *const c_void);
+            gl::VertexAttribPointer(2, 2, gl::FLOAT, gl::FALSE, std::mem::size_of::<Vertex>() as GLsizei, offset_of!(Vertex, tex_coords) as *const GLvoid);
 
             
             gl::GenBuffers(1, &mut self.instance_vbo);

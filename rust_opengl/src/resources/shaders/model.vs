@@ -12,9 +12,12 @@ out VS_OUT {
 } vs_out;
 
 //uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-uniform mat4 lightSpaceMatrix;
+layout (std140) uniform Matrices
+{
+	mat4 projection;
+	mat4 view;
+	mat4 lightSpaceMatrix;
+};
 
 void main() {
 	vs_out.FragPos = vec3(model * vec4(position, 1.0));

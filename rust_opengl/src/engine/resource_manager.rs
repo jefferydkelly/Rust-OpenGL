@@ -87,6 +87,19 @@ impl  ResourceManager {
     }
 
     /*
+    Loads a shader using the given files and inserts it into the Shaders Dictionary using the name as the key
+    v_shader_src - The path to the vertex shader file
+    f_shader_src - The path to the fragment shader file
+    name - The name of the shader to be used as its key in the shaders dictionary
+    return - The loaded shader
+    */
+    pub fn load_shader_with_geometry(&mut self, v_shader_src:&str, f_shader_src:&str, g_shader_src:&str, name:&str) -> Shader {
+        let shady = self.load_shader_from_file_with_geometry(v_shader_src, f_shader_src, g_shader_src);
+        self.shaders.insert(name.to_string(), shady);
+        shady
+    }
+
+    /*
     Loads the shader from the given files and compiles it.
     v_shader_src - The path to the vertex shader file
     f_shader_src - The path to the fragment shader file
@@ -102,6 +115,26 @@ impl  ResourceManager {
     
         let mut shader:Shader = Shader::new();
         shader.compile(&vertex_code, &fragment_code);
+        shader
+    }
+
+    /*
+    Loads the shader from the given files and compiles it.
+    v_shader_src - The path to the vertex shader file
+    f_shader_src - The path to the fragment shader file
+    return - The loaded shader
+    */
+    fn load_shader_from_file_with_geometry(&self, v_shader_src:&str, f_shader_src:&str, g_shader_src:&str) -> Shader {
+        let vertex_code;
+        let fragment_code;
+        let geometry_code:String;
+
+        vertex_code = self.read_shader_file(v_shader_src);
+        fragment_code = self.read_shader_file(f_shader_src);
+        geometry_code = self.read_shader_file(g_shader_src);
+    
+        let mut shader:Shader = Shader::new();
+        shader.compile_with_geometry(&vertex_code, &fragment_code, &geometry_code);
         shader
     }
 
@@ -197,7 +230,11 @@ impl  ResourceManager {
         
      
         for val in v["shaders"].as_array().unwrap() { 
-            self.load_shader(val["vertex"].as_str().unwrap(), val["fragment"].as_str().unwrap(), val["name"].as_str().unwrap());
+            if val["geometry"].is_null() {
+                self.load_shader(val["vertex"].as_str().unwrap(), val["fragment"].as_str().unwrap(), val["name"].as_str().unwrap());
+            } else {
+                self.load_shader_with_geometry(val["vertex"].as_str().unwrap(), val["fragment"].as_str().unwrap(), val["geometry"].as_str().unwrap(), val["name"].as_str().unwrap());
+            }
         }
 
         for val in v["models"].as_array().unwrap() {

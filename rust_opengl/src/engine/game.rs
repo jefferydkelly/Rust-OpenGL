@@ -41,6 +41,7 @@ pub struct Game {
     skybox_shader:Shader,
     frame_buffer:u32,
     quad_vao:u32,
+    uniform_buffer:u32,
     texture_color_buffer:u32,
     depth_map_buffer:u32,
     shadow_map:u32,
@@ -62,7 +63,6 @@ impl Game {
         let model_shader = ResourceManager::get_instance().get_shader("model").to_owned();
         model_shader.use_program();
         model_shader.set_int("shadowMap", 0);
-        model_shader.set_matrix4("projection", &projection);
         
         let screen_shader= ResourceManager::get_instance().load_shader("src/resources/shaders/buffer.vs", "src/resources/shaders/buffers.fs", "screen");
         screen_shader.use_program();
@@ -87,6 +87,7 @@ impl Game {
             skybox_shader: sky_shader,
             frame_buffer:0,
             quad_vao:0,
+            uniform_buffer: 0,
             texture_color_buffer:0,
             depth_map_buffer:0,
             shadow_map:0,
@@ -95,7 +96,6 @@ impl Game {
 
         the_game
     }
-
 
     /*
     Updates everything connected to the Game that needs it.
@@ -121,8 +121,8 @@ impl Game {
     */
     pub fn render(&mut self) {
         unsafe {
-        gl::ClearColor(0.1, 0.1, 0.1, 1.0);
-        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+            gl::ClearColor(0.1, 0.1, 0.1, 1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
             
             
             //Configure shaders and matrices
@@ -152,9 +152,21 @@ impl Game {
 
             self.model_shader.use_program();
             self.model_shader.set_vector3f_glm("lightPos", light_pos);
-            self.model_shader.set_matrix4("lightSpaceMatrix", &light_space_matrix);
+         
             gl::ActiveTexture(gl::TEXTURE0);
             gl::BindTexture(gl::TEXTURE_2D, self.shadow_map);
+            
+            let mat_size = mem::size_of::<Mat4>() as isize;
+            gl::BindBuffer(gl::UNIFORM_BUFFER, self.uniform_buffer);
+      
+            let view_mat = self.cammie.get_view_matrix(); 
+            let view = view_mat.as_ptr();
+            gl::BufferSubData(gl::UNIFORM_BUFFER, mat_size, mat_size, view as *const GLvoid);
+
+            let light =  light_space_matrix.as_ptr();
+            gl::BufferSubData(gl::UNIFORM_BUFFER, mat_size * 2, mat_size, light as *const GLvoid);
+            gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
+            self.model_shader.set_uniform_block("Matrices", 0);
             
             gl::CullFace(gl::FRONT);
             self.level.draw(&self.model_shader);
@@ -285,6 +297,8 @@ impl Game {
         let (shadow_width, shadow_height) = (1024, 1024);
         let mut depth_map:u32 = 0;
 
+        let mut ubo:u32 = 0;
+        let mat_size = mem::size_of::<Mat4>() as isize;
         unsafe {
             gl::GenFramebuffers(1, &mut fbo);
             gl::BindFramebuffer(gl::FRAMEBUFFER, fbo);
@@ -345,7 +359,22 @@ impl Game {
             gl::DrawBuffer(gl::NONE);
             gl::ReadBuffer(gl::NONE);
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
-        
+
+            gl::GenBuffers(1, &mut ubo);
+            gl::BindBuffer(gl::UNIFORM_BUFFER, ubo);
+                        
+            gl::BufferData(gl::UNIFORM_BUFFER, 3 * mat_size, ptr::null(), gl::STATIC_DRAW);
+            gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
+
+            gl::BindBufferRange(gl::UNIFORM_BUFFER, 0, ubo, 0, 3 * mat_size);
+
+            gl::BindBuffer(gl::UNIFORM_BUFFER, ubo);
+            let proj = self.projection.as_ptr();
+            gl::BufferSubData(gl::UNIFORM_BUFFER, 0, mat_size, proj as *const GLvoid);
+            gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
+            
+            self.model_shader.use_program();
+            self.model_shader.set_uniform_block("Matrices", 0);
         }
 
         self.frame_buffer = fbo;
@@ -353,6 +382,7 @@ impl Game {
         self.shadow_map = depth_map;
         self.texture_color_buffer = tex_color_buffer;
         self.quad_vao = quad_vao;
+        self.uniform_buffer = ubo;
         self.shadow_size = vec2(shadow_width as f32, shadow_height as f32);
     }
 }
