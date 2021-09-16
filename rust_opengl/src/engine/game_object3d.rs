@@ -1,7 +1,6 @@
 use glm::{Vec3, vec3, vec2};
 
 use crate::engine::{mesh::Mesh, model::{Material, Model}, shader::Shader, texture::Texture, transform::Transform, vertex::Vertex};
-use rapier3d::prelude::*;
 use tobj;
 
 pub struct GameObject3D {

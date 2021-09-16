@@ -69,20 +69,24 @@ impl Camera {
     */
     pub fn process_keyboard_input(&mut self, dt:f32) {
         let vel = self.move_speed * dt;
-
-        if  InputManager::instance().get_key_state(glfw::Key::W) {
+        if InputManager::get_instance().is_gamepad() {
+            let input = InputManager::get_instance().get_gamepad_input();
+            self.position += vel * input.y * self.forward;
+            self.position += vel * input.x * self.right;
+        }
+        if  InputManager::get_instance().get_key_state(glfw::Key::W) {
             self.position += self.forward * vel;
         } 
 
-        if  InputManager::instance().get_key_state(glfw::Key::S) {
+        if  InputManager::get_instance().get_key_state(glfw::Key::S) {
             self.position -= self.forward * vel;
         } 
 
-        if  InputManager::instance().get_key_state(glfw::Key::A) {
+        if  InputManager::get_instance().get_key_state(glfw::Key::A) {
             self.position -= self.right* vel;
         } 
 
-        if  InputManager::instance().get_key_state(glfw::Key::D) {
+        if  InputManager::get_instance().get_key_state(glfw::Key::D) {
             self.position += self.right* vel;
         }
 

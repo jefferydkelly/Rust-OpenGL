@@ -10,7 +10,6 @@ extern crate glfw;
 use self::glfw::{Key, Action};
 
 extern crate gl;
-use self::gl::types::*;
 
 use core::f32;
 use std::{sync::mpsc::Receiver, mem, ptr, ffi::c_void};
@@ -117,7 +116,6 @@ impl Game {
     dt - The time in seconds since the last update.
     */
     pub fn update(&mut self, dt:f32) {
-
         self.cammie.process_keyboard_input(dt);
 
         //self.player.update(dt);
@@ -131,14 +129,7 @@ impl Game {
         self.model_shader.set_vector3f_glm("spotlight.position", cam_pos);
         self.model_shader.set_vector3f_glm("spotlight.direction", cam_fwd);
 
-        let result = self.physics_manager.raycast(cam_pos, cam_fwd, 50.0);
-        if result.is_some() {
-            println!("This was a triumph");
-            let abby = result.unwrap().get_center();
-            println!("Hit the box at {} {} {}", abby.x, abby.y, abby)
-        } else {
-            println!("Swing and a miss");
-        }
+        
     }
 
     /*
@@ -187,10 +178,10 @@ impl Game {
       
             let view_mat = self.cammie.get_view_matrix(); 
             let view = view_mat.as_ptr();
-            gl::BufferSubData(gl::UNIFORM_BUFFER, mat_size, mat_size, view as *const GLvoid);
+            gl::BufferSubData(gl::UNIFORM_BUFFER, mat_size, mat_size, view as *const c_void);
 
             let light =  light_space_matrix.as_ptr();
-            gl::BufferSubData(gl::UNIFORM_BUFFER, mat_size * 2, mat_size, light as *const GLvoid);
+            gl::BufferSubData(gl::UNIFORM_BUFFER, mat_size * 2, mat_size, light as *const c_void);
             gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
             self.model_shader.set_uniform_block("Matrices", 0);
             
@@ -258,9 +249,9 @@ impl Game {
         } else {
             
             if action == Action::Press {
-                InputManager::instance().update_key_state(key, true);
+                InputManager::get_instance().update_key_state(key, true);
             } else if action == Action::Release {
-                InputManager::instance().update_key_state(key, false);
+                InputManager::get_instance().update_key_state(key, false);
             }
             
         }
@@ -276,13 +267,13 @@ impl Game {
         let mouse_pos = vec2(xpos as f32, ypos as f32);
 
         if self.first_mouse {
-            InputManager::instance().update_mouse_position_glm(mouse_pos);
+            InputManager::get_instance().update_mouse_position_glm(mouse_pos);
             self.first_mouse = false;
         }
-        let mut mouse_dif = mouse_pos -  InputManager::instance().mouse_position;
+        let mut mouse_dif = mouse_pos -  InputManager::get_instance().mouse_position;
         mouse_dif.y *= -1.0;
         self.cammie.process_mouse_movement(mouse_dif);
-        InputManager::instance().update_mouse_position_glm(mouse_pos);
+        InputManager::get_instance().update_mouse_position_glm(mouse_pos);
     }
 
     /*
@@ -364,7 +355,7 @@ impl Game {
             gl::BufferData(gl::ARRAY_BUFFER, (mem::size_of::<f32>() * quad_vertices.len()) as isize, &quad_vertices[0] as *const f32 as *const c_void, gl::STATIC_DRAW);
             
             gl::EnableVertexAttribArray(0);
-            gl::VertexAttribPointer(0, 4, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as GLsizei, ptr::null());
+            gl::VertexAttribPointer(0, 4, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, ptr::null());
         
             gl::GenFramebuffers(1, &mut depth_map_fbo);
             
@@ -400,7 +391,7 @@ impl Game {
 
             gl::BindBuffer(gl::UNIFORM_BUFFER, ubo);
             let proj = self.projection.as_ptr();
-            gl::BufferSubData(gl::UNIFORM_BUFFER, 0, mat_size, proj as *const GLvoid);
+            gl::BufferSubData(gl::UNIFORM_BUFFER, 0, mat_size, proj as *const c_void);
             gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
             
             self.model_shader.use_program();

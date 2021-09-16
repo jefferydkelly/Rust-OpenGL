@@ -1,18 +1,21 @@
 
 extern crate nalgebra_glm as glm;
 
-use std::iter::Once;
+use std::{iter::Once, ptr};
 
-use glm::Vec2;
+use glfw::{Glfw, ffi::{GLFWgamepadstate, glfwGetGamepadState, glfwJoystickIsGamepad, glfwJoystickPresent}};
+use glm::{Vec2, vec2};
+use na::ComplexField;
 use once_cell::sync::OnceCell;
 
 
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct InputManager {
     pub keys:[bool;1024],
     pub mouse_buttons:[bool;8],
-    pub mouse_position:glm::Vec2
+    pub mouse_position:glm::Vec2,
+    gamepad:glfw::Joystick
 }
 
 static mut INPUT_MANAGER:OnceCell<InputManager> = OnceCell::new();
@@ -22,11 +25,16 @@ impl InputManager {
     /*
     Creates the single instance of the Input Manager
     */
-    pub fn create_instance() {
+    pub fn create_instance(glf:Glfw) {
+        let mut gamepad =  glfw::Joystick {
+            id: glfw::JoystickId::Joystick1,
+            glfw:glf
+        };
         let many = InputManager {
             keys:[false;1024],
             mouse_buttons:[false;8],
-            mouse_position:glm::vec2(0.0,0.0)
+            mouse_position:glm::vec2(0.0,0.0),
+            gamepad:gamepad
         };
         unsafe {
             INPUT_MANAGER.set(many).unwrap();
@@ -37,7 +45,7 @@ impl InputManager {
     Returns the Input Manager singleton for use
     return - The Input Manager singleton
     */
-    pub fn instance()->&'static mut InputManager {
+    pub fn get_instance()->&'static mut InputManager {
         unsafe  {
             INPUT_MANAGER.get_mut().expect("Input Manager has not been created")
         }
@@ -119,6 +127,29 @@ impl InputManager {
         self.mouse_position
     }
 
+    pub fn is_gamepad(&self) -> bool {
+        return self.gamepad.is_gamepad();
+    }
+
+    pub fn get_gamepad_input(&self) -> Vec2 {
+        if self.is_gamepad() {
+            let state = self.gamepad.get_gamepad_state().unwrap();
+            let mut x = state.get_axis(glfw::GamepadAxis::AxisLeftX);
+
+            if x.abs() < 0.1 {
+                x = 0.0;
+            }
+            let mut y = state.get_axis(glfw::GamepadAxis::AxisLeftY);
+
+            if y.abs() < 0.1 {
+                y = 0.0;
+            }
+
+            return vec2(x,-y);
+        }
+
+        return vec2(0.0, 0.0);
+    }
     /*
     Resets the Input Manager by setting all stored values to false
     */

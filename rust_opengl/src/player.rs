@@ -90,13 +90,13 @@ impl Player {
 impl Updated for Player {
     fn update(&mut self, dt:f32) {
        
-        if InputManager::instance().get_key_state(glfw::Key::A) {
+        if InputManager::get_instance().get_key_state(glfw::Key::A) {
             self.transform.rotate(dt);
-        } else if InputManager::instance().get_key_state(glfw::Key::D) {
+        } else if InputManager::get_instance().get_key_state(glfw::Key::D) {
             self.transform.rotate(-dt);
         }
         
-        if InputManager::instance().get_key_state(glfw::Key::Space) {
+        if InputManager::get_instance().get_key_state(glfw::Key::Space) {
             self.fire();
         }
 

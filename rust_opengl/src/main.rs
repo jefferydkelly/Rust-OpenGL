@@ -11,7 +11,6 @@ use engine::ui_element::UIElement;
 use engine::ui_manager::UIManager;
 use engine::{audio_manager::AudioManager, resource_manager};
 use engine::game::Game;
-use gl::types::GLsizei;
 use glm::{Mat3, Mat4, mat3, mat4, vec3};
 use crate::engine::skybox::Skybox;
 use crate::engine::{input_manager::InputManager, resource_manager::ResourceManager};
@@ -59,7 +58,7 @@ pub fn main() {
     }
 
     
-    InputManager::create_instance();
+    InputManager::create_instance(glfw.clone());
     ResourceManager::create_instance();
     
     AudioManager::create_instance();
