@@ -7,9 +7,10 @@ extern crate gl;
 
 use std::{mem, ptr, ffi::c_void};
 
+use engine::ui_element::UIElement;
+use engine::ui_manager::UIManager;
 use engine::{audio_manager::AudioManager, resource_manager};
 use engine::game::Game;
-use engine::physics_manager::PhysicsManager;
 use gl::types::GLsizei;
 use glm::{Mat3, Mat4, mat3, mat4, vec3};
 use crate::engine::skybox::Skybox;
@@ -60,7 +61,7 @@ pub fn main() {
     
     InputManager::create_instance();
     ResourceManager::create_instance();
-    PhysicsManager::create_instance();
+    
     AudioManager::create_instance();
     
     let mut the_game = Game::new(SCR_WIDTH, SCR_HEIGHT);

@@ -11,12 +11,15 @@ use std::collections::HashMap;
 use std::ffi::c_void;
 use std::mem;
 
+#[derive(Debug)]
 pub struct Character {
     texture_id:u32,
     size:Vec2,
     bearing:Vec2,
     advance:u32
 }
+
+#[derive(Debug)]
 pub struct TextRenderer {
     text_shader:Shader,
     text_vao:u32,

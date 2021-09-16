@@ -10,6 +10,7 @@ pub trait Rendered {
     fn render(&self, renderer:&SpriteRenderer);
 }
 
+
 pub trait UI {
     fn set_visibility(&mut self, visible:bool);
     fn is_visible(&self)->bool;

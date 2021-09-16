@@ -23,8 +23,11 @@ use nalgebra_glm::{Vec2, vec3};
 
 use crate::engine::shader::Shader;
 
-use super::camera;
+use super::aabb::AABB;
+use super::physics::{self, Physics};
 use super::input_manager::InputManager;
+use super::ui_manager::UIManager;
+use super::ui_element::UIElement;
 
 
 pub struct Game {
@@ -45,7 +48,8 @@ pub struct Game {
     texture_color_buffer:u32,
     depth_map_buffer:u32,
     shadow_map:u32,
-    shadow_size:Vec2
+    shadow_size:Vec2,
+    physics_manager:Physics
 }
 
 impl Game {
@@ -58,8 +62,13 @@ impl Game {
     pub fn new(w:u32, h:u32)->Game {
    
         let mut levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
-        let projection: Mat4 = glm::perspective(4.0 / 3.0, 45.0, 0.1, 500.0);
-       
+        
+        UIManager::create_instance(w as f32,h as f32);
+
+        let text = UIElement::new(vec2(600.0, 500.0), "TEST");
+        UIManager::get_instance().add_element(text);
+        
+        let projection = glm::perspective(4.0 / 3.0, 45.0, 0.1, 500.0);
         let model_shader = ResourceManager::get_instance().get_shader("model").to_owned();
         model_shader.use_program();
         model_shader.set_int("shadowMap", 0);
@@ -73,6 +82,11 @@ impl Game {
         sky_shader.use_program();
         sky_shader.set_matrix4("projection", &projection);
 
+        let abby = AABB::new(vec3(-10.0, -10.0, -10.0), vec3(10.0, 10.0, 10.0));
+        let ybba = AABB::new(vec3(-10.0, -10.0, 20.0), vec3(10.0, 10.0,30.0));
+        let mut phy_man = Physics::new();
+        phy_man.add_body(abby);
+        phy_man.add_body(ybba);
         let the_game = Game {
             state: GameState::ACTIVE,
             width: w,
@@ -91,7 +105,8 @@ impl Game {
             texture_color_buffer:0,
             depth_map_buffer:0,
             shadow_map:0,
-            shadow_size: vec2(0.0, 0.0)
+            shadow_size: vec2(0.0, 0.0),
+            physics_manager:phy_man
         };
 
         the_game
@@ -108,11 +123,22 @@ impl Game {
         //self.player.update(dt);
         //self.the_box.update();
 
+        let cam_pos = self.cammie.position;
+        let cam_fwd = self.cammie.forward;
         self.level.update_lighting(&self.model_shader);
         self.model_shader.set_matrix4("view", &self.cammie.get_view_matrix());
-        self.model_shader.set_vector3f_glm("viewPos", self.cammie.position);
-        self.model_shader.set_vector3f_glm("spotlight.position", self.cammie.position);
-        self.model_shader.set_vector3f_glm("spotlight.direction", self.cammie.forward);
+        self.model_shader.set_vector3f_glm("viewPos", cam_pos);
+        self.model_shader.set_vector3f_glm("spotlight.position", cam_pos);
+        self.model_shader.set_vector3f_glm("spotlight.direction", cam_fwd);
+
+        let result = self.physics_manager.raycast(cam_pos, cam_fwd, 50.0);
+        if result.is_some() {
+            println!("This was a triumph");
+            let abby = result.unwrap().get_center();
+            println!("Hit the box at {} {} {}", abby.x, abby.y, abby)
+        } else {
+            println!("Swing and a miss");
+        }
     }
 
     /*
@@ -168,6 +194,7 @@ impl Game {
             gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
             self.model_shader.set_uniform_block("Matrices", 0);
             
+            
             gl::CullFace(gl::FRONT);
             self.level.draw(&self.model_shader);
             gl::CullFace(gl::BACK);
@@ -179,7 +206,7 @@ impl Game {
             self.skybox_shader.set_int("skybox", 0);
             self.level.draw_skybox();
             
-            
+            UIManager::get_instance().render();
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 
             gl::ClearColor(1.0, 1.0, 1.0, 1.0);
@@ -192,6 +219,8 @@ impl Game {
             gl::ActiveTexture(gl::TEXTURE0);
             gl::BindTexture(gl::TEXTURE_2D, self.texture_color_buffer);
             gl::DrawArrays(gl::TRIANGLES, 0, 6);
+
+            
         }
     
         
@@ -227,13 +256,13 @@ impl Game {
         if key == Key::Escape && action == Action::Press {
             window.set_should_close(true)
         } else {
-            unsafe {
-                if action == Action::Press {
-                    InputManager::instance().update_key_state(key, true);
-                } else if action == Action::Release {
-                    InputManager::instance().update_key_state(key, false);
-                }
+            
+            if action == Action::Press {
+                InputManager::instance().update_key_state(key, true);
+            } else if action == Action::Release {
+                InputManager::instance().update_key_state(key, false);
             }
+            
         }
     }
 
@@ -300,6 +329,7 @@ impl Game {
         let mut ubo:u32 = 0;
         let mat_size = mem::size_of::<Mat4>() as isize;
         unsafe {
+            
             gl::GenFramebuffers(1, &mut fbo);
             gl::BindFramebuffer(gl::FRAMEBUFFER, fbo);
             

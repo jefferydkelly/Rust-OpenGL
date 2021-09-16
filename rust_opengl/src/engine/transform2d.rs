@@ -2,7 +2,7 @@ use glm::{Vec3, vec3, Mat4};
 
 use crate::engine::shader::Shader;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Transform2D {
     pub translation:Vec3,
     rotation:f32,

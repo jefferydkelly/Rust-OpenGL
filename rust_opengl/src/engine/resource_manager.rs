@@ -4,7 +4,7 @@ use std::path::Path;
 use std::{collections::HashMap};
 use std::fs::{self};
 use image::GenericImageView;
-use nalgebra_glm::{Vec3, vec3, Mat4};
+use nalgebra_glm::{Vec3, vec3};
 use once_cell::sync::OnceCell;
 use serde_json::Value;
 
@@ -15,7 +15,6 @@ use crate::engine::lights::*;
 use crate::level::Level;
 use crate::engine::transform::Transform;
 
-use super::camera::Camera;
 use super::skybox::Skybox;
 
 static mut RESOURCE_MANAGER:OnceCell<ResourceManager> = OnceCell::new();
