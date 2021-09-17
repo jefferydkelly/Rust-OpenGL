@@ -11,7 +11,10 @@ pub struct Camera {
     pitch:f32,
     move_speed:f32,
     mouse_sensitivity: f32,
-    zoom: f32
+    zoom: f32,
+    view:Mat4,
+    projection:Mat4,
+    screen_size:Vec2
 }
 
 impl Camera {
@@ -22,7 +25,10 @@ impl Camera {
     y - The starting yaw of the Camera
     pit - The starting pitch of the Camera
     */
-    pub fn new(pos:Vec3, upw:Vec3, y:f32, pit:f32)-> Camera {
+    pub fn new(pos:Vec3, upw:Vec3, y:f32, pit:f32, screen_size:Vec2)-> Camera {
+        let fwd = vec3(0.0, 0.0, 1.0);
+        let fov = 45.0;
+        let projection = glm::perspective(screen_size.x / screen_size.y, fov, 0.1, 500.0);
         let mut cammie = Camera {
             position:pos,
             forward: vec3(0.0, 0.0, 1.0),
@@ -34,7 +40,9 @@ impl Camera {
             move_speed: 25.0,
             mouse_sensitivity: 0.1,
             zoom: 45.0,
-
+            view: look_at(&pos, &(pos + &fwd), &upw),
+            projection:projection,
+            screen_size:screen_size 
         };
         cammie.update_camera_vectors();
         cammie
@@ -53,6 +61,8 @@ impl Camera {
         
         self.right = cross(&self.forward, &self.world_up).normalize();
         self.up = cross(&self.right, &self.forward).normalize();
+
+        self.view = look_at(&self.position, &(self.position + &self.forward), &self.up);
     }
 
     /*
@@ -60,7 +70,11 @@ impl Camera {
     Return - The view matrix
     */
     pub fn get_view_matrix(&self) -> Mat4 {
-        return look_at(&self.position, &(self.position + self.forward), &self.up);
+        self.view
+    }
+
+    pub fn get_projection_matrix(&self)->Mat4 {
+        self.projection
     }
 
     /* 
@@ -70,24 +84,38 @@ impl Camera {
     pub fn process_keyboard_input(&mut self, dt:f32) {
         let vel = self.move_speed * dt;
         if InputManager::get_instance().is_gamepad() {
-            let input = InputManager::get_instance().get_gamepad_input();
+            let input = InputManager::get_instance().get_gamepad_left_stick();
             self.position += vel * input.y * self.forward;
             self.position += vel * input.x * self.right;
-        }
-        if  InputManager::get_instance().get_key_state(glfw::Key::W) {
-            self.position += self.forward * vel;
-        } 
 
-        if  InputManager::get_instance().get_key_state(glfw::Key::S) {
-            self.position -= self.forward * vel;
-        } 
+            let offset = InputManager::get_instance().get_gamepad_right_stick();
+        
+            self.yaw += offset.x;
+            self.pitch += offset.y;
+            
+            if self.pitch < -89.0 {
+                self.pitch = -89.0;
+            } else if self.pitch > 89.0 {
+                self.pitch = 89.0;
+            }
+            let scroll = InputManager::get_instance().get_gamepad_right_trigger() - InputManager::get_instance().get_gamepad_left_trigger();
+            self.process_mouse_scroll(scroll / 10.0);
+        } else {
+            if  InputManager::get_instance().get_key_state(glfw::Key::W) {
+                self.position += self.forward * vel;
+            } 
 
-        if  InputManager::get_instance().get_key_state(glfw::Key::A) {
-            self.position -= self.right* vel;
-        } 
+            if  InputManager::get_instance().get_key_state(glfw::Key::S) {
+                self.position -= self.forward * vel;
+            } 
 
-        if  InputManager::get_instance().get_key_state(glfw::Key::D) {
-            self.position += self.right* vel;
+            if  InputManager::get_instance().get_key_state(glfw::Key::A) {
+                self.position -= self.right* vel;
+            } 
+
+            if  InputManager::get_instance().get_key_state(glfw::Key::D) {
+                self.position += self.right* vel;
+            }
         }
 
         self.update_camera_vectors();
@@ -112,5 +140,18 @@ impl Camera {
 
         self.update_camera_vectors();
     
+    }
+
+    pub fn process_mouse_scroll(&mut self, offset:f32) {
+        self.zoom -= offset;
+
+        if self.zoom < 1.0 {
+            self.zoom = 1.0;
+        } else if self.zoom > 45.0 {
+            self.zoom = 45.0;
+        }
+
+        self.projection = glm::perspective(self.screen_size.x / self.screen_size.y, self.zoom.to_radians(), 0.1, 500.0);
+
     }
 }

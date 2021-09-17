@@ -90,15 +90,14 @@ impl Model {
    }
 
    pub fn draw(&self, shader:&Shader) {
-       unsafe {
-        
+  
         shader.set_material("material", self.material);
         self.material.bind();
         
         for mesh in self.meshes.iter() {
             mesh.draw();
         }
-    }
+    
    }
 
    pub fn add_instance(&mut self, t:Transform) -> usize {

@@ -57,9 +57,11 @@ impl InputManager {
     is_down - Whether the key was pressed (true) or released (false)
     */
     pub fn update_key_state(&mut self, key:glfw::Key, is_down:bool) {
-        let ukey = glfw::get_key_scancode(Some(key)).unwrap() as usize;
-        if  ukey < 1024 {
-            self.keys[ukey] = is_down;
+        if !self.is_gamepad() {
+            let ukey = glfw::get_key_scancode(Some(key)).unwrap() as usize;
+            if  ukey < 1024 {
+                self.keys[ukey] = is_down;
+            }
         }
 
     }
@@ -131,7 +133,7 @@ impl InputManager {
         return self.gamepad.is_gamepad();
     }
 
-    pub fn get_gamepad_input(&self) -> Vec2 {
+    pub fn get_gamepad_left_stick(&self) -> Vec2 {
         if self.is_gamepad() {
             let state = self.gamepad.get_gamepad_state().unwrap();
             let mut x = state.get_axis(glfw::GamepadAxis::AxisLeftX);
@@ -149,6 +151,44 @@ impl InputManager {
         }
 
         return vec2(0.0, 0.0);
+    }
+
+    pub fn get_gamepad_right_stick(&self) -> Vec2 {
+        if self.is_gamepad() {
+            let state = self.gamepad.get_gamepad_state().unwrap();
+            let mut x = state.get_axis(glfw::GamepadAxis::AxisRightX);
+
+            if x.abs() < 0.1 {
+                x = 0.0;
+            }
+            let mut y = state.get_axis(glfw::GamepadAxis::AxisRightY);
+
+            if y.abs() < 0.1 {
+                y = 0.0;
+            }
+
+            return vec2(x,-y);
+        }
+
+        return vec2(0.0, 0.0);
+    }
+
+    pub fn get_gamepad_right_trigger(&self) -> f32 {
+        if self.is_gamepad() {
+            let state = self.gamepad.get_gamepad_state().unwrap();
+            return state.get_axis(glfw::GamepadAxis::AxisRightTrigger);
+        }
+        
+        0.0
+    }
+
+    pub fn get_gamepad_left_trigger(&self) -> f32 {
+        if self.is_gamepad() {
+            let state = self.gamepad.get_gamepad_state().unwrap();
+            return state.get_axis(glfw::GamepadAxis::AxisLeftTrigger);
+        }
+        
+        0.0
     }
     /*
     Resets the Input Manager by setting all stored values to false

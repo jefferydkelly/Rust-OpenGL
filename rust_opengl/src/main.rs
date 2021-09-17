@@ -45,6 +45,7 @@ pub fn main() {
     window.set_framebuffer_size_polling(true);
     window.set_cursor_mode(glfw::CursorMode::Disabled);
     window.set_cursor_pos_polling(true);
+    window.set_scroll_polling(true);
     
     // ---------------------------------------
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
