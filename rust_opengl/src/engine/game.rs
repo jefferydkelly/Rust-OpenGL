@@ -23,8 +23,12 @@ use nalgebra_glm::{Vec2, vec3};
 use crate::engine::shader::Shader;
 
 use super::aabb::AABB;
+use super::model::{Material, Model};
 use super::physics::{self, Physics};
 use super::input_manager::InputManager;
+use super::player::Player;
+use super::resource_manager;
+use super::transform::Transform;
 use super::ui_manager::UIManager;
 use super::ui_element::UIElement;
 
@@ -33,7 +37,7 @@ pub struct Game {
     state:GameState,
     width: u32,
     height:u32,
-    cammie:Camera,
+    camera:Camera,
     first_mouse:bool,
     level:Level,
     model_shader:Shader,
@@ -47,17 +51,20 @@ pub struct Game {
     depth_map_buffer:u32,
     shadow_map:u32,
     shadow_size:Vec2,
-    physics_manager:Physics
+    player:Player
 }
 
 impl Game {
     /*
-    Creates a new game object
-    w - The width of the screen at the start of the game
-    h - The height of the screen at the start of the game
-    return - The game object
+        Creates a new game object
+        w - The width of the screen at the start of the game
+        h - The height of the screen at the start of the game
+        return - The game object
     */
     pub fn new(w:u32, h:u32)->Game {
+
+        let cammie = Camera::new(glm::vec3(0.0, 10.0, -50.0), glm::vec3(0.0, 1.0, 0.0), 90.0, 0.0, vec2(800.0, 600.0));
+        Physics::get_instance().set_matrix(cammie.get_projection_matrix(), cammie.get_view_matrix());
    
         let mut levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
         
@@ -80,16 +87,17 @@ impl Game {
         sky_shader.use_program();
         sky_shader.set_matrix4("projection", &projection);
 
-        let abby = AABB::new(vec3(-10.0, -10.0, -10.0), vec3(10.0, 10.0, 10.0));
-        let ybba = AABB::new(vec3(-10.0, -10.0, 20.0), vec3(10.0, 10.0,30.0));
-        let mut phy_man = Physics::new();
-        phy_man.add_body(abby);
-        phy_man.add_body(ybba);
+        let player_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/mesh.vs", "src/resources/shaders/model.fs", "player");
+        let material = Material::new("src/resources/textures/sportscar_orange.png", "src/resources/textures/sportscar_orange.png", 32.0);
+        let player = Player::new("src/resources/models/sportscar_orange.obj", player_shader, material, Transform::new(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0)));
+        
+        
+        
         let the_game = Game {
             state: GameState::ACTIVE,
             width: w,
             height: h,
-            cammie: Camera::new(glm::vec3(0.0, 0.0, -50.0), glm::vec3(0.0, 1.0, 0.0), 90.0, 0.0, vec2(800.0, 600.0)),
+            camera: cammie,
             first_mouse: true,
             level: levy,
             model_shader: model_shader,
@@ -103,28 +111,28 @@ impl Game {
             depth_map_buffer:0,
             shadow_map:0,
             shadow_size: vec2(0.0, 0.0),
-            physics_manager:phy_man
+            player:player
         };
 
         the_game
     }
 
     /*
-    Updates everything connected to the Game that needs it.
-    dt - The time in seconds since the last update.
+        Updates everything connected to the Game that needs it.
+        dt - The time in seconds since the last update.
     */
     pub fn update(&mut self, dt:f32) {
-        self.cammie.process_keyboard_input(dt);
-
+        self.camera.update(dt);
+        self.player.process_input(dt);
         //self.player.update(dt);
         //self.the_box.update();
 
-        let cam_pos = self.cammie.position;
-        let cam_fwd = self.cammie.forward;
-        let projection = self.cammie.get_projection_matrix();
+        let cam_pos = self.camera.position;
+        let cam_fwd = self.camera.forward;
+        let projection = self.camera.get_projection_matrix();
         
         self.model_shader.use_program();
-        self.model_shader.set_matrix4("view", &self.cammie.get_view_matrix());
+        self.model_shader.set_matrix4("view", &self.camera.get_view_matrix());
         self.model_shader.set_matrix4("projection", &projection);
         self.model_shader.set_vector3f_glm("viewPos", cam_pos);
         self.model_shader.set_vector3f_glm("spotlight.position", cam_pos);
@@ -133,12 +141,14 @@ impl Game {
        
         self.skybox_shader.use_program();
         self.skybox_shader.set_matrix4("projection", &projection);
+
+        Physics::get_instance().collision_check();
         
     }
 
     /*
-    Renders the game using the given shader
-    shader - The Shader to use when rendering the scene.
+        Renders the game using the given shader
+        shader - The Shader to use when rendering the scene.
     */
     pub fn render(&mut self) {
         unsafe {
@@ -181,11 +191,11 @@ impl Game {
             gl::BindBuffer(gl::UNIFORM_BUFFER, self.uniform_buffer);
       
             
-            let proj_mat = self.cammie.get_projection_matrix();
+            let proj_mat = self.camera.get_projection_matrix();
             let projection = proj_mat.as_ptr();
             gl::BufferSubData(gl::UNIFORM_BUFFER, 0, mat_size, projection as *const c_void);
 
-            let view_mat = self.cammie.get_view_matrix(); 
+            let view_mat = self.camera.get_view_matrix(); 
             let view = view_mat.as_ptr();
             gl::BufferSubData(gl::UNIFORM_BUFFER, mat_size, mat_size, view as *const c_void);
 
@@ -197,12 +207,13 @@ impl Game {
             
             gl::CullFace(gl::FRONT);
             self.level.draw(&self.model_shader);
+            self.player.draw();
             gl::CullFace(gl::BACK);
 
             self.skybox_shader.use_program();
-            let skyview = glm::mat3_to_mat4(&glm::mat4_to_mat3(&self.cammie.get_view_matrix()));
+            let skyview = glm::mat3_to_mat4(&glm::mat4_to_mat3(&self.camera.get_view_matrix()));
             self.skybox_shader.set_matrix4("view", &skyview);
-            self.skybox_shader.set_matrix4("projection", &self.cammie.get_projection_matrix());
+            self.skybox_shader.set_matrix4("projection", &self.camera.get_projection_matrix());
             self.skybox_shader.set_int("skybox", 0);
             self.level.draw_skybox();
             
@@ -229,9 +240,9 @@ impl Game {
     }
 
     /*
-    Processes the events passed in
-    window - A reference to the currently active window
-    events - A list of events that have occurred
+        Processes the events passed in
+        window - A reference to the currently active window
+        events - A list of events that have occurred
     */
     pub fn process_events(&mut self, window: &mut glfw::Window, events: &Receiver<(f64, glfw::WindowEvent)>) {
         for (_, event) in glfw::flush_messages(events) {
@@ -241,17 +252,17 @@ impl Game {
                 }
                 glfw::WindowEvent::Key(key, _, action, _) => self.process_keyboard_events(window, key, action),
                 glfw::WindowEvent::CursorPos(x, y) => self.process_mouse_events(x, y),
-                glfw::WindowEvent::Scroll(_, y)=> self.cammie.process_mouse_scroll(y as f32),
+                glfw::WindowEvent::Scroll(_, y)=> self.camera.process_zoom(y as f32),
                 _ => {}
             }
         }
     }
     
     /*
-    Processes keyboard based events
-    window - A reference to the currently active window
-    key - The key the action was performed on
-    action - The action performed on the key
+        Processes keyboard based events
+        window - A reference to the currently active window
+        key - The key the action was performed on
+        action - The action performed on the key
     */
     fn process_keyboard_events(&mut self, window: &mut glfw::Window, key:glfw::Key, action: glfw::Action) {
         if key == Key::Escape && action == Action::Press {
@@ -268,9 +279,9 @@ impl Game {
     }
 
     /*
-    Processes mouse mvement and scrolling as they occur
-    xpos - The current horizontal position of the mouse
-    ypos - The current vertical position of the mouse
+        Processes mouse mvement and scrolling as they occur
+        xpos - The current horizontal position of the mouse
+        ypos - The current vertical position of the mouse
     */
     fn process_mouse_events(&mut self, xpos:f64, ypos:f64) {
         
@@ -282,31 +293,39 @@ impl Game {
         }
         let mut mouse_dif = mouse_pos -  InputManager::get_instance().mouse_position;
         mouse_dif.y *= -1.0;
-        self.cammie.process_mouse_movement(mouse_dif);
+        self.camera.process_mouse_movement(mouse_dif);
         InputManager::get_instance().update_mouse_position_glm(mouse_pos);
     }
 
     /*
-    Returns the view matrix for outside use
-    return - The camera's view matrix
+        Returns the view matrix for outside use
+        return - The camera's view matrix
     */
     pub fn get_view_matrix(&self) -> Mat4 {
-        return self.cammie.get_view_matrix();
+        return self.camera.get_view_matrix();
     }
 
     /*
-    Returns the projection matrix for outside use
-    return - The projection matrix
+        Returns the projection matrix for outside use
+        return - The projection matrix
     */
     pub fn get_projection_matrix(&self) -> Mat4 {
-        return self.cammie.get_projection_matrix();
+        return self.camera.get_projection_matrix();
     }
 
+    /*
+        Handles the resizing of the window and passes the new size on to the camera to update the projection matrix
+        size - The new size of the screen
+     */
     pub fn resize_window(&mut self, size:Vec2) {
         self.width = size.x as u32;
         self.height = size.y as u32;
+        self.camera.update_screen_size(size);
     }
 
+    /*
+        Creates all the render data needed at the start of the game. 
+    */
     pub fn initialize_render_data(&mut self) {
 
         let quad_vertices:[f32;24] = [
@@ -367,6 +386,7 @@ impl Game {
             gl::EnableVertexAttribArray(0);
             gl::VertexAttribPointer(0, 4, gl::FLOAT, gl::FALSE, 4 * mem::size_of::<f32>() as i32, ptr::null());
         
+            //Creates the depth map frame buffer and the texture for shadow mapping.
             gl::GenFramebuffers(1, &mut depth_map_fbo);
             
             
@@ -391,6 +411,8 @@ impl Game {
             gl::ReadBuffer(gl::NONE);
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 
+            //Creates a uniform buffer object for the basic camera data, projection and view for the camera and the light's view matrix as well.
+            //At the start only the projection is added.  The rest are updated in update
             gl::GenBuffers(1, &mut ubo);
             gl::BindBuffer(gl::UNIFORM_BUFFER, ubo);
                         
@@ -400,7 +422,7 @@ impl Game {
             gl::BindBufferRange(gl::UNIFORM_BUFFER, 0, ubo, 0, 3 * mat_size);
 
             gl::BindBuffer(gl::UNIFORM_BUFFER, ubo);
-            let proj = self.cammie.get_projection_matrix().as_ptr();
+            let proj = self.camera.get_projection_matrix().as_ptr();
             gl::BufferSubData(gl::UNIFORM_BUFFER, 0, mat_size, proj as *const c_void);
             gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
             
@@ -415,5 +437,8 @@ impl Game {
         self.quad_vao = quad_vao;
         self.uniform_buffer = ubo;
         self.shadow_size = vec2(shadow_width as f32, shadow_height as f32);
+
+        let player_transform:*const Transform =  self.player.get_transform();
+        self.camera.set_follow_target(player_transform);
     }
 }

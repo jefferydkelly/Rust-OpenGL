@@ -1,5 +1,6 @@
 use core::f32;
 use std::ffi::c_void;
+use std::hash::Hash;
 use std::path::Path;
 use std::{collections::HashMap};
 use std::fs::{self};
@@ -15,6 +16,7 @@ use crate::engine::lights::*;
 use crate::level::Level;
 use crate::engine::transform::Transform;
 
+use super::model;
 use super::skybox::Skybox;
 
 static mut RESOURCE_MANAGER:OnceCell<ResourceManager> = OnceCell::new();
@@ -33,8 +35,7 @@ impl  ResourceManager {
     pub fn create_instance() {
         let many = ResourceManager {
             shaders: HashMap::new(),
-            textures: HashMap::new(),
-            //audio:Audio::new()
+            textures: HashMap::new()
         };
 
         unsafe {
@@ -57,7 +58,7 @@ impl  ResourceManager {
     name - The name of the shader used as a dictionary key
     return - The shader of that name if it exists in the dictionary
     */
-    pub fn get_shader(&self, name:&str)->&Shader {
+    pub fn get_shader(&mut self, name:&str)->&Shader {
         if self.shaders.contains_key(name) {
             return self.shaders.get(name).unwrap();
         }
@@ -245,7 +246,9 @@ impl  ResourceManager {
             let shin = mat["shininess"].as_f64().unwrap() as f32;
             let material:Material = Material::new(mat["diffuse"].as_str().unwrap(), mat["specular"].as_str().unwrap(), shin);
             
-            let mut model = Model::new(val["path"].as_str().unwrap(), shader, material);
+            let model_name = val["name"].as_str().unwrap();
+            let path = val["path"].as_str().unwrap();
+            let mut model = Model::new(path, shader, material);
 
             let instances = val["instances"].as_array().unwrap();
             for inst in instances{
@@ -257,6 +260,8 @@ impl  ResourceManager {
                 model.add_instance(transform);
             }
             model.create_instances();
+            
+          
             level.add_model(model);
         }
 

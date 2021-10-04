@@ -16,6 +16,11 @@ pub struct UIManager {
 
 impl UIManager {
     
+    /*
+        Creates a new instance of the UI Manager
+        width - The width of the screen
+        height - The height of the screen
+    */
     pub fn create_instance(width:f32, height:f32) {
         let text_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/text.vs", "src/resources/shaders/text.fs", "text");
 
@@ -40,8 +45,8 @@ impl UIManager {
     }
 
     /*
-    Grants access to the current instance of UI Manager
-    return - The UI Manager singleton
+        Grants access to the current instance of UI Manager
+        return - The UI Manager singleton
     */
     pub fn get_instance()->&'static mut UIManager {
         unsafe  {
@@ -49,6 +54,10 @@ impl UIManager {
         }
     }
 
+
+    /*
+        Renders the UI 
+    */
     pub fn render(&mut self) {
         unsafe {
             gl::Enable(gl::BLEND);
@@ -61,6 +70,10 @@ impl UIManager {
         }
     }
 
+    /*
+        Adds a new UI element under the managers control
+        ui - The new UI element 
+    */
     pub fn add_element(&mut self, ui:UIElement) {
         self.elements.push(ui);
     }
