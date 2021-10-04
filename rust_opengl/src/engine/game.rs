@@ -123,7 +123,7 @@ impl Game {
     */
     pub fn update(&mut self, dt:f32) {
         self.camera.update(dt);
-        self.player.process_input(dt);
+        self.player.update(dt);
         //self.player.update(dt);
         //self.the_box.update();
 

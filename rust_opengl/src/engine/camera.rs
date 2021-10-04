@@ -1,6 +1,7 @@
 use std::ptr;
 
 use glm::{Mat4, Vec2, Vec3, cross, look_at, vec3};
+use na::ComplexField;
 use crate::engine::input_manager::InputManager;
 
 use super::transform::Transform;
@@ -75,6 +76,10 @@ impl Camera {
         if self.follow_target.is_null() {
             self.view = look_at(&self.position, &(self.position + &self.forward), &self.up);
         } else {
+            let rotation = InputManager::get_instance().get_movement_input().x;
+            if rotation.abs() > f32::EPSILON {
+                self.follow_vector = glm::rotate_vec3(&self.follow_vector, rotation.to_radians() * 0.16, &self.up);
+            }
             unsafe {
                 let target_pos = (*self.follow_target).translation;
                 self.view = look_at(&self.position, &target_pos, &self.up);
@@ -156,18 +161,20 @@ impl Camera {
     */
     pub fn process_mouse_movement(&mut self, offset:Vec2) {
     
-        let true_offset = offset.scale(self.mouse_sensitivity);
-        
-        self.yaw += true_offset.x;
-        self.pitch += true_offset.y;
-        
-        if self.pitch < -89.0 {
-            self.pitch = -89.0;
-        } else if self.pitch > 89.0 {
-            self.pitch = 89.0;
-        }
+        if !InputManager::get_instance().is_gamepad() {
+            let true_offset = offset.scale(self.mouse_sensitivity);
+            
+            self.yaw += true_offset.x;
+            self.pitch += true_offset.y;
+            
+            if self.pitch < -89.0 {
+                self.pitch = -89.0;
+            } else if self.pitch > 89.0 {
+                self.pitch = 89.0;
+            }
 
-        self.update_camera_vectors();
+            self.update_camera_vectors();
+        }
     
     }
 

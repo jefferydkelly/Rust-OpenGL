@@ -1,6 +1,8 @@
 use core::f32;
 use std::path::Path;
 
+use na::ComplexField;
+
 use crate::enemy::Enemy;
 use crate::glm::{Vec3, vec3, vec2};
 use super::physics::Physics;
@@ -18,6 +20,10 @@ pub struct Player {
     shader:Shader,
     transform:Transform,
     position:Vec3,
+    forward:Vec3,
+    speed:f32,
+    max_speed:f32,
+    turn_speed:f32,
     collider:usize
 }
 
@@ -95,7 +101,12 @@ impl Player {
             shader:shader,
             transform:transform,
             position:transform.translation,
-            collider:id
+            collider:id,
+            forward: vec3(0.0, 0.0, 1.0),
+            speed: 0.0,
+            max_speed: 10.0,
+            turn_speed: 20.0
+
         }
    }
 
@@ -111,14 +122,14 @@ impl Player {
     
    }
 
-   pub fn process_input(&mut self, dt:f32) {
-       let col = Physics::get_instance().check_for_collision(self.collider);
-       if col.is_some() {
+   pub fn update(&mut self, dt:f32) {
+        let col = Physics::get_instance().check_for_collision(self.collider);
+        if col.is_some() {
             let my_body = Physics::get_instance().get_body(self.collider);
             let (imax, imin) = my_body.get_max_and_min_points();
             let other  = col.unwrap();
             let (omax, omin) = other.get_max_and_min_points();
-          
+        
             let my_ext = my_body.get_extents();
             let total_ext = my_ext + other.get_extents();
             let dif = other.get_center() - my_body.get_center();
@@ -130,7 +141,7 @@ impl Player {
             let ab_dif = vec3(ax, ay, az);
 
             let overlap = total_ext - ab_dif;
-             
+            
             let mut correction = Vec3::zeros();
             if ax < total_ext.x && ax >= az {
                 correction.x = -(dif.x/ax) * (overlap.x + f32::EPSILON);
@@ -145,28 +156,44 @@ impl Player {
                 correction.z = -(dif.z/az)  * (overlap.z + f32::EPSILON);
             }
             
-           self.position += correction;
-       }
-        
-       let movement = InputManager::get_instance().get_movement_input();
-
-        if  InputManager::get_instance().get_key_state(glfw::Key::Q) {
-            self.transform.rotate(vec3(0.0, -dt, 0.0));
-        } 
-
-        if  InputManager::get_instance().get_key_state(glfw::Key::E) {
-            self.transform.rotate(vec3( dt, 0.0, 0.0));
+            self.position += correction;
         }
 
-        if  InputManager::get_instance().get_key_state(glfw::Key::R) {
-            self.transform.reset_rotation();
-        }
-
-        
-
-        self.position += movement * dt * 10.0;
+        self.process_input(dt);
+        self.position += self.forward * self.speed * dt;
         self.transform.update_translation(self.position);
         Physics::get_instance().update_body(self.collider, self.transform);
+   }
+   pub fn process_input(&mut self, dt:f32) {
+        let mut movement = InputManager::get_instance().get_movement_input();
+    
+        if InputManager::get_instance().is_gamepad() {
+            movement.z = InputManager::get_instance().get_gamepad_right_trigger() - InputManager::get_instance().get_gamepad_left_trigger();
+        } 
+        if movement.z > f32::EPSILON {
+            self.speed += 5.0 * movement.z * dt;
+            if self.speed > self.max_speed {
+                self.speed = self.max_speed;
+            }
+        }  else if movement.z < -f32::EPSILON {
+            self.speed -= 5.0 * dt;
+            if self.speed < -self.max_speed {
+                self.speed = -self.max_speed;
+            }
+        } else if self.speed != 0.0 {
+            self.speed *= 1.0 - dt;
+            if self.speed.abs() < 0.25 {
+                self.speed = 0.0;
+            }
+        }
+        
+
+         if movement.x.abs() > f32::EPSILON {
+            let rotation = self.turn_speed.to_radians() * movement.x * dt;
+            self.transform.rotate(vec3(0.0, rotation, 0.0));
+            let fwd = glm::rotate_vec3(&self.forward, rotation, &vec3(0.0, 1.0, 0.0));
+            self.forward = fwd;
+        }
    }
 
    pub fn get_transform(&self) -> &Transform {
