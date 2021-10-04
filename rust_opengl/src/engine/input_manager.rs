@@ -1,11 +1,7 @@
-
 extern crate nalgebra_glm as glm;
 
-use std::{iter::Once, ptr};
-
-use glfw::{Glfw, ffi::{GLFWgamepadstate, glfwGetGamepadState, glfwJoystickIsGamepad, glfwJoystickPresent}};
-use glm::{Vec2, vec2};
-use na::ComplexField;
+use glfw::{Glfw};
+use glm::{Vec2, Vec3, vec2, vec3};
 use once_cell::sync::OnceCell;
 
 
@@ -23,10 +19,11 @@ static mut INPUT_MANAGER:OnceCell<InputManager> = OnceCell::new();
 impl InputManager {
 
     /*
-    Creates the single instance of the Input Manager
+        Creates the single instance of the Input Manager
+        glf - The instance of glfw for determining the kind of input
     */
     pub fn create_instance(glf:Glfw) {
-        let mut gamepad =  glfw::Joystick {
+        let gamepad =  glfw::Joystick {
             id: glfw::JoystickId::Joystick1,
             glfw:glf
         };
@@ -42,8 +39,8 @@ impl InputManager {
     }
 
     /*
-    Returns the Input Manager singleton for use
-    return - The Input Manager singleton
+        Returns the Input Manager singleton for use
+        return - The Input Manager singleton
     */
     pub fn get_instance()->&'static mut InputManager {
         unsafe  {
@@ -52,9 +49,9 @@ impl InputManager {
     }
 
     /*
-    Updates the key state of the given key to the given value
-    key - The code for the key that was pressed
-    is_down - Whether the key was pressed (true) or released (false)
+        Updates the key state of the given key to the given value
+        key - The code for the key that was pressed
+        is_down - Whether the key was pressed (true) or released (false)
     */
     pub fn update_key_state(&mut self, key:glfw::Key, is_down:bool) {
         if !self.is_gamepad() {
@@ -67,9 +64,9 @@ impl InputManager {
     }
 
     /*
-    Gets the current state of the key
-    key - The key to be checked
-    return - The state of the key.  True if pressed.  False if not or the key doesn't exist/isn't tracked
+        Gets the current state of the key
+        key - The key to be checked
+        return - The state of the key.  True if pressed.  False if not or the key doesn't exist/isn't tracked
     */
     pub fn get_key_state(&self, key:glfw::Key)->bool {
         let ukey = glfw::get_key_scancode(Some(key)).unwrap() as usize;
@@ -81,9 +78,9 @@ impl InputManager {
     }
 
     /*
-    Updates the state of the mouse button
-    button - The mouse button to be updated
-    state - The current state of the button
+        Updates the state of the mouse button
+        button - The mouse button to be updated
+        state - The current state of the button
     */
     pub fn update_mouse_buttons(&mut self, button:usize, state:f32) {
         if button < 8 {
@@ -92,9 +89,9 @@ impl InputManager {
     }
 
     /*
-    Gets the current state of the mouse button
-    button - The button to be checked
-    return - True if the mouse button is clicked or false if it is not or is out of range of the array
+        Gets the current state of the mouse button
+        button - The button to be checked
+        return - True if the mouse button is clicked or false if it is not or is out of range of the array
     */
     pub  fn get_mouse_button_state(&self, button:usize) -> bool {
         if button < 8 {
@@ -105,35 +102,44 @@ impl InputManager {
     }
 
     /*
-    Updates the stored position of the mouse
-    x - The x position of the mouse
-    y - The y position of the mouse
+        Updates the stored position of the mouse
+        x - The x position of the mouse
+        y - The y position of the mouse
     */
     pub fn update_mouse_position(&mut self, x:f32, y:f32) {
         self.mouse_position = glm::vec2(x,y);
     }
 
     /*
-    Updates the stored position of the mouse
-    pos - A 2-dimensional vector representing the current position of the mouse
+        Updates the stored position of the mouse
+        pos - A 2-dimensional vector representing the current position of the mouse
     */
     pub fn update_mouse_position_glm(&mut self, pos:Vec2) {
         self.mouse_position = pos;
     }
 
     /*
-    Returns the current position of the mouse for outside use
-    return - A 2-dimensional vector representing the current position of the mouse
+        Returns the current position of the mouse for outside use
+        return - A 2-dimensional vector representing the current position of the mouse
     */
     pub fn get_mouse_position(&self)->glm::Vec2 {
         self.mouse_position
     }
 
+    /*
+        Whether or not a gamepad is currently connected and being used for the game
+        Returns a boolean that is true if a gamepad is connected and false if it is not.
+    */
     pub fn is_gamepad(&self) -> bool {
         return self.gamepad.is_gamepad();
     }
 
-    pub fn get_gamepad_left_stick(&self) -> Vec2 {
+     /*
+        Gets the vector indicating how far off center the left thumbstick is.
+        Returns a zero vector if there is no gamepad connected
+        returns - A vector indicating how far off center the left thumbstick
+    */
+    pub fn get_gamepad_left_stick(&self) -> Vec3 {
         if self.is_gamepad() {
             let state = self.gamepad.get_gamepad_state().unwrap();
             let mut x = state.get_axis(glfw::GamepadAxis::AxisLeftX);
@@ -147,12 +153,17 @@ impl InputManager {
                 y = 0.0;
             }
 
-            return vec2(x,-y);
+            return vec3(-x, 0.0, -y,);
         }
 
-        return vec2(0.0, 0.0);
+        return Vec3::zeros()
     }
 
+     /*
+        Gets the vector indicating how far off center the right thumbstick is.
+        Returns a zero vector if there is no gamepad connected
+        returns - A vector indicating how far off center the right thumbstick
+    */
     pub fn get_gamepad_right_stick(&self) -> Vec2 {
         if self.is_gamepad() {
             let state = self.gamepad.get_gamepad_state().unwrap();
@@ -173,6 +184,11 @@ impl InputManager {
         return vec2(0.0, 0.0);
     }
 
+    /*
+        Gets the value indicating how far down the left trigger of the gamepad is pressed
+        Returns 0.0 if there is no gamepad connected
+        returns - A float indicating how far down the left trigger is pushed
+    */
     pub fn get_gamepad_right_trigger(&self) -> f32 {
         if self.is_gamepad() {
             let state = self.gamepad.get_gamepad_state().unwrap();
@@ -182,6 +198,11 @@ impl InputManager {
         0.0
     }
 
+    /*
+        Gets the value indicating how far down the left trigger of the gamepad is pressed
+        Returns 0.0 if there is no gamepad connected
+        returns - A float indicating how far down the left trigger is pushed
+    */
     pub fn get_gamepad_left_trigger(&self) -> f32 {
         if self.is_gamepad() {
             let state = self.gamepad.get_gamepad_state().unwrap();
@@ -191,7 +212,7 @@ impl InputManager {
         0.0
     }
     /*
-    Resets the Input Manager by setting all stored values to false
+        Resets the Input Manager by setting all stored values to false
     */
     pub fn clear_input(&mut self) {
         for i in 0..self.keys.len() {
@@ -200,6 +221,31 @@ impl InputManager {
 
         for i in 0..self.mouse_buttons.len() {
             self.mouse_buttons[i] = false;
+        }
+    }
+
+    pub fn get_movement_input(&self) -> Vec3 {
+        if self.is_gamepad() {
+            return self.get_gamepad_left_stick();
+        } else {
+            let mut movement:Vec3 = Vec3::zeros();
+            if  self.get_key_state(glfw::Key::W) {
+                movement += vec3(0.0, 0.0, 1.0);
+            } 
+
+            if  InputManager::get_instance().get_key_state(glfw::Key::S) {
+                movement -= vec3(0.0, 0.0, 1.0);
+            } 
+
+            if  InputManager::get_instance().get_key_state(glfw::Key::A) {
+                movement += vec3(1.0, 0.0, 0.0);
+            } 
+
+            if  InputManager::get_instance().get_key_state(glfw::Key::D) {
+                movement -= vec3(1.0, 0.0, 0.0);
+            }
+
+            return movement;
         }
     }
 }

@@ -8,71 +8,11 @@
     ], 
     "models": [
          {
-            "name": "house",
-            "path": "src/resources/models/rockLarge.obj",
+            "name": "road",
+            "path": "src/resources/models/tile01.obj",
             "material": {
-                "diffuse": "src/resources/textures/rock.png",
-                "specular": "src/resources/textures/house02_specular.png",
-                "shininess": 32
-            },
-            "shader": "model",
-            "instances": [
-                {
-                    "position": {
-                        "x": -2.0,
-                        "y": 1.5,
-                        "z": 0.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                }, {
-                    "position": {
-                        "x": 2.0,
-                        "y": 0.0,
-                        "z": 1.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    }
-                }, {
-                    "position": {
-                        "x": -1.0,
-                        "y": 0.0,
-                        "z": 2.0
-                    },
-                        "rotation": {
-                        "x": 0.0,
-                        "y": 60.0,
-                        "z": 0.0
-                    },
-                    "scale": {
-                        "x": 0.5,
-                        "y": 0.5,
-                        "z": 0.5
-                    }
-                }
-            ]
-        }, {
-            "name": "grass",
-            "path": "src/resources/models/road.obj",
-            "material": {
-                "diffuse": "src/resources/textures/grass.png",
-                "specular": "src/resources/textures/tile15_specular.png",
+                "diffuse": "src/resources/textures/tile02.png",
+                "specular": "src/resources/textures/tile02_specular.png",
                 "shininess": 32
             },
             "shader": "model",
@@ -89,9 +29,69 @@
                         "z": 0.0
                     },
                     "scale": {
-                        "x": 12.0,
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                },  {
+                    "position": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 30.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                }, {
+                    "position": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 60.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                }
+            ]
+        },  {
+            "name": "house",
+            "path": "src/resources/models/house02.obj",
+            "material": {
+                "diffuse": "src/resources/textures/house02.png",
+                "specular": "src/resources/textures/house02_specular.png",
+                "shininess": 32
+            },
+            "shader": "model",
+            "instances": [
+                {
+                    "position": {
+                        "x": 0.0,
                         "y": 1.0,
-                        "z": 12.0
+                        "z": 90.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.15,
+                        "z": 0.15
                     }
                 }
             ]

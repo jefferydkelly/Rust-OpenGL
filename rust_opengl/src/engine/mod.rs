@@ -25,3 +25,4 @@ pub mod ui_renderer;
 pub mod aabb;
 pub mod ray;
 pub mod physics;
+pub mod player;

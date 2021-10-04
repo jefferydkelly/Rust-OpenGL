@@ -7,6 +7,7 @@ extern crate gl;
 
 use std::{mem, ptr, ffi::c_void};
 
+use engine::physics::Physics;
 use engine::ui_element::UIElement;
 use engine::ui_manager::UIManager;
 use engine::{audio_manager::AudioManager, resource_manager};
@@ -22,8 +23,6 @@ use self::glfw::{Context};
 const SCR_WIDTH: u32 = 800;
 const SCR_HEIGHT: u32 = 600;
 
-
-pub mod player;
 pub mod enemy;
 pub mod level;
 pub mod engine;
@@ -63,6 +62,7 @@ pub fn main() {
     ResourceManager::create_instance();
     
     AudioManager::create_instance();
+    Physics::create_instance();
     
     let mut the_game = Game::new(SCR_WIDTH, SCR_HEIGHT);
     the_game.initialize_render_data();
