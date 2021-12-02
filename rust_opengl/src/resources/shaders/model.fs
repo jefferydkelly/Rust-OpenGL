@@ -68,7 +68,7 @@ vec3 CalcDirectionalLight(DirectionalLight light, vec3 norm, vec3 viewDir, float
 vec3 CalcPointLight(PointLight light, vec3 norm, vec3 FragPos, vec3 viewDir);
 vec3 CalcSpotlight(Spotlight light, vec3 norm, vec3 fragPos, vec3 viewDir);
 float ShadowCalculation(vec4 fragLightSpace);
-
+ 
 float bias = 0.005;
 void main() 
 {

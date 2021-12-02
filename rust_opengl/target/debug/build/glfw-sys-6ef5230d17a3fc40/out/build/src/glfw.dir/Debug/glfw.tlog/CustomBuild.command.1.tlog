@@ -1,0 +1,10 @@
+^C:\USERS\JDK91\.CARGO\REGISTRY\SRC\GITHUB.COM-1ECC6299DB9EC823\GLFW-SYS-3.3.4\SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/jdk91/.cargo/registry/src/github.com-1ecc6299db9ec823/glfw-sys-3.3.4 "-BC:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/build" --check-stamp-file "C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/build/src/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

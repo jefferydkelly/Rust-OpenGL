@@ -11,7 +11,6 @@ out VS_OUT {
 	vec4 FragPosLightSpace;
 } vs_out;
 
-//uniform mat4 model;
 layout (std140) uniform Matrices
 {
 	mat4 projection;

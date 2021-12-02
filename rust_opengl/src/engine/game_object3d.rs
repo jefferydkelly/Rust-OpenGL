@@ -1,33 +1,30 @@
 use glm::{Vec3, vec3, vec2};
 
-use crate::engine::{mesh::Mesh, model::{Material, Model}, shader::Shader, texture::Texture, transform::Transform, vertex::Vertex};
-use tobj;
+use crate::engine::{ model::{Material, Model}, shader::Shader, texture::Texture, transform::Transform, vertex::Vertex};
 
 pub struct GameObject3D {
     model:Model,
     id:usize,
-    transform:Transform
 }
 
 impl GameObject3D {
-    pub fn new(model:&Model, transform:Transform) -> Self {
+    pub fn new(model:Model) -> Self {
      
         Self {
-            model:model.to_owned(),
-            transform:transform,
+            model:model,
             id:0
         }
    }
 
+   pub fn add_instance(&mut self, t:Transform) {
+        self.model.add_instance(t);
+   }
+
    pub fn init(&mut self) {
-       self.id = self.model.add_instance(self.transform);
+       self.model.create_instances();
    }
 
-   pub fn update(&mut self) {
-        self.model.update_instance(self.id, self.transform);
-   }
-
-   pub fn draw(&self) {
-       //self.model.draw();
+   pub fn draw(&self, shader:&Shader) {
+       self.model.draw(shader);
    }
 }

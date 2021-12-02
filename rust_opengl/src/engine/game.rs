@@ -12,9 +12,11 @@ use self::glfw::{Key, Action};
 extern crate gl;
 
 use core::f32;
+use std::thread;
 use std::{sync::mpsc::Receiver, mem, ptr, ffi::c_void};
 use crate::engine::camera::Camera;
 
+use crate::engine::player;
 use crate::engine::resource_manager::ResourceManager;
 use crate::level::Level;
 use glm::{vec2, Mat4};
@@ -22,7 +24,7 @@ use nalgebra_glm::{Vec2, vec3};
 
 use crate::engine::shader::Shader;
 
-use super::aabb::AABB;
+use super::colliders::AABB;
 use super::model::{Material, Model};
 use super::physics::{self, Physics};
 use super::input_manager::InputManager;
@@ -65,34 +67,50 @@ impl Game {
 
         let cammie = Camera::new(glm::vec3(0.0, 10.0, -50.0), glm::vec3(0.0, 1.0, 0.0), 90.0, 0.0, vec2(800.0, 600.0));
         Physics::get_instance().set_matrix(cammie.get_projection_matrix(), cammie.get_view_matrix());
-   
-        let mut levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
         
-        UIManager::create_instance(w as f32,h as f32);
+        let levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
+        println!("Level has been loaded");
+        
+        
+        
+        let model_loader = thread::spawn(||{
+            let model_shader = ResourceManager::get_instance().get_shader("model").to_owned();
+            model_shader.use_program();
+            model_shader.set_int("shadowMap", 0);
+            model_shader
+        });
+        
+        let screen_loader = thread::spawn(||{
+            let screen_shader= ResourceManager::get_instance().get_shader("screen").to_owned();
+            screen_shader.use_program();
+            screen_shader.set_int("screenTexture", 0);
+            screen_shader
+        });
 
-        let text = UIElement::new(vec2(600.0, 500.0), "TEST");
-        UIManager::get_instance().add_element(text);
-        
-        let projection = glm::perspective(4.0 / 3.0, 45.0, 0.1, 500.0);
-        let model_shader = ResourceManager::get_instance().get_shader("model").to_owned();
-        model_shader.use_program();
-        model_shader.set_int("shadowMap", 0);
-        
-        let screen_shader= ResourceManager::get_instance().load_shader("src/resources/shaders/buffer.vs", "src/resources/shaders/buffers.fs", "screen");
-        screen_shader.use_program();
-        screen_shader.set_int("screenTexture", 0);
+        let depth_loader = thread::spawn(||{
+            let depth_shader= ResourceManager::get_instance().get_shader("depth").to_owned();
+            depth_shader
+        });
 
-        let depth_shader= ResourceManager::get_instance().load_shader("src/resources/shaders/shadow.vs", "src/resources/shaders/shadow.fs", "shadow");
-        let sky_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/skybox.vs", "src/resources/shaders/skybox.fs", "skybox");
-        sky_shader.use_program();
-        sky_shader.set_matrix4("projection", &projection);
+        let sky_loader = thread::spawn(||{
+            let projection = glm::perspective(4.0 / 3.0, 45.0, 0.1, 500.0);
+            let sky_shader = ResourceManager::get_instance().get_shader("sky").to_owned();
+            sky_shader.use_program();
+            sky_shader.set_matrix4("projection", &projection);
+            sky_shader
+        });
 
-        let player_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/mesh.vs", "src/resources/shaders/model.fs", "player");
-        let material = Material::new("src/resources/textures/sportscar_orange.png", "src/resources/textures/sportscar_orange.png", 32.0);
-        let player = Player::new("src/resources/models/sportscar_orange.obj", player_shader, material, Transform::new(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0)));
+        let player_loader = thread::spawn(||{
+            let player = Player::new(Transform::new(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 0.0), vec3(2.0, 2.0, 2.0)));
+            player
+        });
         
-        
-        
+        let model_shader = model_loader.join().unwrap();
+        let screen_shader = screen_loader.join().unwrap();
+        let depth_shader = depth_loader.join().unwrap();
+        let sky_shader = sky_loader.join().unwrap();
+        let mut player = player_loader.join().unwrap();
+        player.init();
         let the_game = Game {
             state: GameState::ACTIVE,
             width: w,
@@ -117,6 +135,10 @@ impl Game {
         the_game
     }
 
+    pub fn start(&mut self) {
+        
+    }
+
     /*
         Updates everything connected to the Game that needs it.
         dt - The time in seconds since the last update.
@@ -138,7 +160,7 @@ impl Game {
         self.model_shader.set_vector3f_glm("spotlight.position", cam_pos);
         self.model_shader.set_vector3f_glm("spotlight.direction", cam_fwd);
         self.level.update_lighting(&self.model_shader);
-       
+        
         self.skybox_shader.use_program();
         self.skybox_shader.set_matrix4("projection", &projection);
 
@@ -154,6 +176,7 @@ impl Game {
         unsafe {
             gl::ClearColor(0.1, 0.1, 0.1, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+        }
             
             
             //Configure shaders and matrices
@@ -166,12 +189,14 @@ impl Game {
             
             self.depth_shader.use_program();
             self.depth_shader.set_matrix4("lightSpaceMatrix", &light_space_matrix);
-            
+        
+        unsafe{
             gl::Viewport(0, 0, self.shadow_size.x as i32, self.shadow_size.y as i32);
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.depth_map_buffer);
             gl::Clear(gl::DEPTH_BUFFER_BIT);
             gl::CullFace(gl::FRONT);
             self.level.draw(&self.depth_shader);
+            self.player.render(&self.depth_shader);
             gl::CullFace(gl::BACK);
 
             gl::BindFramebuffer(gl::FRAMEBUFFER, self.frame_buffer);
@@ -207,16 +232,17 @@ impl Game {
             
             gl::CullFace(gl::FRONT);
             self.level.draw(&self.model_shader);
-            self.player.draw();
+            self.player.render(&self.model_shader);
             gl::CullFace(gl::BACK);
-
-            self.skybox_shader.use_program();
-            let skyview = glm::mat3_to_mat4(&glm::mat4_to_mat3(&self.camera.get_view_matrix()));
-            self.skybox_shader.set_matrix4("view", &skyview);
-            self.skybox_shader.set_matrix4("projection", &self.camera.get_projection_matrix());
-            self.skybox_shader.set_int("skybox", 0);
-            self.level.draw_skybox();
-            
+        }
+        
+        self.skybox_shader.use_program();
+        let skyview = glm::mat3_to_mat4(&glm::mat4_to_mat3(&self.camera.get_view_matrix()));
+        self.skybox_shader.set_matrix4("view", &skyview);
+        self.skybox_shader.set_matrix4("projection", &self.camera.get_projection_matrix());
+        self.skybox_shader.set_int("skybox", 0);
+        self.level.draw_skybox();
+        unsafe {    
             UIManager::get_instance().render();
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 

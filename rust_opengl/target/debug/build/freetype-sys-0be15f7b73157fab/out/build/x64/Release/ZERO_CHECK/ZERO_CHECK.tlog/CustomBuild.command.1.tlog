@@ -1,0 +1,10 @@
+^C:\USERS\JDK91\DOCUMENTS\RUST OPENGL\RUST_OPENGL\TARGET\DEBUG\BUILD\FREETYPE-SYS-0BE15F7B73157FAB\OUT\BUILD\CMAKEFILES\74E5135160003E6AFC7846C416439BFE\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/jdk91/.cargo/registry/src/github.com-1ecc6299db9ec823/freetype-sys-0.14.0/freetype2 "-BC:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/freetype-sys-0be15f7b73157fab/out/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/freetype-sys-0be15f7b73157fab/out/build/freetype.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,4 +1,6 @@
-use super::{aabb::AABB, transform::Transform};
+use std::ptr::{self, null_mut};
+
+use super::{colliders::AABB, transform::Transform};
 use super::ray::Ray;
 use glm::{Vec3, Mat4};
 use once_cell::sync::OnceCell;
@@ -10,7 +12,7 @@ pub struct Physics {
     projection:Mat4,
     view:Mat4,
     pub max_angle:f32,
-    collisions:Vec<Option<AABB>>
+    collisions:Vec<Vec<AABB>>
 }
 
 impl Physics {
@@ -74,7 +76,7 @@ impl Physics {
     pub fn collision_check(&mut self) {
         
         for i in 0..self.collisions.len() {
-            self.collisions[i] = None;
+            self.collisions[i].clear();
         }
         for i in 0..self.bodies.len() {
             let body_a = self.bodies[i];
@@ -82,8 +84,8 @@ impl Physics {
                 let body_b = self.bodies[j];
 
                 if body_a.overlaps(body_b) {
-                    self.collisions[i] = Some(body_b);
-                    self.collisions[j] = Some(body_a);
+                    self.collisions[i].push(body_b);
+                    self.collisions[j].push(body_a);
                 }
             }
         }
@@ -95,14 +97,15 @@ impl Physics {
         trans - The transform for the parent object of the body
         min - The minimum point on the Axis-Aligned Bounding Body
         max - The maximum point of the AABB
+        trigger - Whether or not the collider is a pass through/trigger collider
         return - The index of the new body 
     */
-    pub fn add_body(&mut self, trans:Transform, min:Vec3, max:Vec3)-> usize {
+    pub fn add_body(&mut self, trans:Transform, min:Vec3, max:Vec3, trigger:bool)-> usize {
 
        
-        let newb = AABB::new(min, max, trans);
+        let newb = AABB::new(min, max, trans, trigger);
         self.bodies.push(newb);
-        self.collisions.push(None);
+        self.collisions.push(Vec::new());
         self.bodies.len() - 1
     }
 
@@ -129,11 +132,11 @@ impl Physics {
         index - The index of the checked body in the vector
         return - The other body if there is a collision.  None otherwise. 
     */
-    pub fn check_for_collision(&self, index:usize) -> Option<AABB> {
+    pub fn check_for_collision(&self, index:usize) -> &Vec<AABB> {
         if index < self.collisions.len() {
-            return self.collisions[index];
+            return &self.collisions[index];
         }
 
-        None
+        return &self.collisions[0]
     }
 }

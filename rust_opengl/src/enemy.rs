@@ -1,7 +1,6 @@
 use crate::engine::texture::Texture;
 use glm::{Vec3, vec3};
  
-use crate::engine::collider::Collider;
 use crate::engine::sprite_renderer::SpriteRenderer;
 use crate::engine::transform2d::Transform2D;
 
@@ -11,7 +10,6 @@ pub struct Enemy {
     sprite:Texture,
     velocity:Vec3,
     color:Vec3,
-    pub collider:Collider,
     is_visible:bool
 }
 
@@ -22,7 +20,6 @@ impl Enemy {
             velocity: vec3(0.0, 0.0,0.0),
             color: vec3(1.0,1.0,1.0),
             sprite:spr,
-            collider: Collider::new(pos, scale),
             is_visible:true
         }
     }

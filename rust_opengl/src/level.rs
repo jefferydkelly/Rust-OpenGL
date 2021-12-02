@@ -1,8 +1,8 @@
 
-use crate::engine::{lights::*, model::Model, resource_manager::ResourceManager, shader::Shader, skybox::Skybox};
+use crate::engine::{game_object3d::GameObject3D, lights::*, model::Model, resource_manager::ResourceManager, shader::Shader, skybox::Skybox};
 use glm::Mat4;
 pub struct Level {
-    models:Vec<Model>,
+    game_objects:Vec<GameObject3D>,
     dir_lights: Vec<DirectionalLight>,
     point_lights: Vec<PointLight>,
     spotlights: Vec<Spotlight>,
@@ -12,7 +12,7 @@ pub struct Level {
 impl Level {
     pub fn new(the_box:Skybox) -> Self {
         Self {
-            models: Vec::new(),
+            game_objects: Vec::new(),
             dir_lights: Vec::new(),
             point_lights: Vec::new(),
             spotlights: Vec::new(),
@@ -20,8 +20,8 @@ impl Level {
         }
     }
 
-    pub fn add_model(&mut self, milly:Model) {
-        self.models.push(milly);
+    pub fn add_game_object(&mut self, game_object:GameObject3D) {
+        self.game_objects.push(game_object);
     }
 
     pub fn add_directional_light(&mut self, light:DirectionalLight) {
@@ -74,8 +74,8 @@ impl Level {
     }
 
     pub fn draw(&mut self, shader:&Shader) {
-        for i in 0..self.models.len() {
-            self.models[i].draw(shader);
+        for i in 0..self.game_objects.len() {
+            self.game_objects[i].draw(shader);
         }
     }
 

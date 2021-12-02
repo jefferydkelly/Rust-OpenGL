@@ -1,0 +1,10 @@
+^C:\USERS\JDK91\DOCUMENTS\RUST OPENGL\RUST_OPENGL\TARGET\DEBUG\BUILD\FREETYPE-SYS-0BE15F7B73157FAB\OUT\BUILD\CMAKEFILES\74E5135160003E6AFC7846C416439BFE\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

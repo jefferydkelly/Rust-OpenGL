@@ -7,7 +7,6 @@ use glm::{vec2, vec3, Vec2, Vec3};
 
 use crate::engine::texture::Texture;
 use crate::engine::sprite_renderer::SpriteRenderer;
-use crate::engine::collider::Collider;
 use crate::engine::transform2d::Transform2D;
 
 #[derive(Clone)]
@@ -16,7 +15,6 @@ pub struct GameObject {
     pub velocity:Vec3,
     pub color:Vec3,
     sprite:Texture,
-    pub collider:Collider,
     is_visible:bool
 }
 
@@ -27,7 +25,6 @@ impl GameObject {
             velocity: vec3(0.0, 0.0, 0.0),
             color: vec3(1.0,1.0,1.0),
             sprite:spr,
-            collider: Collider::new(pos, scale),
             is_visible:true
         }
     }
@@ -43,7 +40,6 @@ impl GameObject {
             let mut position:Vec3 = self.transform.get_translation();
             position += self.velocity.scale(dt);
             self.transform.update_translation(position);
-            self.collider.position = position;
             if self.is_offscreen() {
                 self.is_visible = false;
             }

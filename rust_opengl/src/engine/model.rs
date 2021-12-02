@@ -1,8 +1,8 @@
-use std::{path::{Path, PathBuf}, usize};
+use std::{path::Path, usize};
 
-use crate::engine::{aabb::AABB, mesh::InstancedMesh, shader::Shader, texture::Texture, transform::Transform, vertex::Vertex};
+use crate::engine::{mesh::InstancedMesh, shader::Shader, texture::Texture, transform::Transform, vertex::Vertex};
 use tobj;
-use glm::{Vec2, vec2, Vec3, vec3, Mat4};
+use glm::{vec2, Vec3, vec3};
 
 use super::{physics::Physics, resource_manager::ResourceManager};
 
@@ -15,15 +15,15 @@ pub struct Material {
 
 impl Material {
 
-    pub fn new(dif_src:&str, spec_src:&str, shin:f32)-> Self {
-        let dif = ResourceManager::get_instance().load_texture(dif_src, "specular");
-        let spec = ResourceManager::get_instance().load_texture(spec_src, "specular");
+    pub fn new(dif:Texture, spec:Texture, shin:f32)-> Self {
+     
         Self {
             diffuse: dif,
             specular: spec,
             shininess: shin
         }
     }
+
     pub fn bind(&self) {
         unsafe {
             gl::ActiveTexture(gl::TEXTURE1);
@@ -39,21 +39,22 @@ impl Material {
 pub struct Model {
     meshes:Vec<InstancedMesh>,
     material: Material,
-    shader:*const Shader,
+    shader:Shader,
     ids:Vec<usize>,
     min_pos: Vec3,
-    max_pos: Vec3
+    max_pos: Vec3,
+    has_trigger:bool
 }
 
 impl Model {
-    pub fn new(path:&str, shader:&Shader, mat:Material) -> Self {
+    pub fn new(path:&str, shader:Shader, mat:Material, trigger:bool) -> Self {
     
         let new_path = Path::new(path);
-       let cannon = new_path.canonicalize().unwrap();
-       let path_str = cannon.to_str().unwrap();
+        let cannon = new_path.canonicalize().unwrap();
+        let path_str = cannon.to_str().unwrap();
       
-        let obj = tobj::load_obj(path_str,
-             &tobj::LoadOptions {
+            let obj = tobj::load_obj(path_str,
+    &tobj::LoadOptions {
                 single_index: true,
                 triangulate: true,
                 ..Default::default()
@@ -118,7 +119,8 @@ impl Model {
             shader:shader,
             ids:Vec::new(),
             min_pos: min_pos,
-            max_pos: max_pos
+            max_pos: max_pos,
+            has_trigger:trigger
         }
    }
 
@@ -139,11 +141,11 @@ impl Model {
             index = self.meshes[i].add_instance(t);
         }
 
-        let mut max = self.max_pos;
+        let max = self.max_pos;
 
-        let mut min = self.min_pos;
+        let min = self.min_pos;
 
-        let id = Physics::get_instance().add_body(t, min, max);
+        let id = Physics::get_instance().add_body(t, min, max, self.has_trigger);
         self.ids.push(id);
         index
    }
@@ -162,5 +164,9 @@ impl Model {
 
    pub fn get_number_of_instances(&self) -> usize {
        self.meshes.len()
+   }
+
+   pub fn get_material(&self)->Material {
+       self.material
    }
 }

@@ -1,0 +1,8 @@
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/include/GLFW/glfw3.h
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/include/GLFW/glfw3native.h
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/lib/cmake/glfw3/glfw3Config.cmake
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/lib/cmake/glfw3/glfw3ConfigVersion.cmake
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/lib/cmake/glfw3/glfw3Targets.cmake
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/lib/cmake/glfw3/glfw3Targets-debug.cmake
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/lib/pkgconfig/glfw3.pc
+C:/Users/jdk91/Documents/Rust OpenGL/rust_opengl/target/debug/build/glfw-sys-6ef5230d17a3fc40/out/lib/glfw3.lib

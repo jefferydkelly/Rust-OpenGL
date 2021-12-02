@@ -5,15 +5,10 @@ extern crate nalgebra as na;
 extern crate nalgebra_glm as glm;
 extern crate gl;
 
-use std::{mem, ptr, ffi::c_void};
-
 use engine::physics::Physics;
-use engine::ui_element::UIElement;
 use engine::ui_manager::UIManager;
-use engine::{audio_manager::AudioManager, resource_manager};
+use engine::audio_manager::AudioManager;
 use engine::game::Game;
-use glm::{Mat3, Mat4, mat3, mat4, vec3};
-use crate::engine::skybox::Skybox;
 use crate::engine::{input_manager::InputManager, resource_manager::ResourceManager};
 
 
@@ -29,6 +24,7 @@ pub mod engine;
 
 pub fn main() {
 
+    println!("Started the game");
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
     glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
     glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
@@ -57,18 +53,22 @@ pub fn main() {
         //gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
     }
 
-    
+    println!("Window created, creating instances");
     InputManager::create_instance(glfw.clone());
     ResourceManager::create_instance();
     
     AudioManager::create_instance();
     Physics::create_instance();
-    
+
+    ResourceManager::get_instance().load_shader("src/resources/shaders/text.vs", "src/resources/shaders/text.fs", "text");
+    ResourceManager::get_instance().load_shader("src/resources/shaders/text.vs", "src/resources/shaders/basicShader.fs", "ui");
+    UIManager::create_instance(SCR_WIDTH as f32, SCR_HEIGHT as f32);
+    println!("Instances created.  Creating the game.");
     let mut the_game = Game::new(SCR_WIDTH, SCR_HEIGHT);
     the_game.initialize_render_data();
     let mut last_frame =glfw.get_time();
     let mut delta_time:f32 = 0.0;
-
+    println!("Starting the game");
     while !window.should_close() {
         let current_frame = glfw.get_time();
         delta_time = (current_frame - last_frame) as f32;

@@ -4,18 +4,55 @@
             "name": "model",
             "vertex": "src/resources/shaders/model.vs",
             "fragment": "src/resources/shaders/model.fs"
+        },
+        {
+            "name": "sky",
+            "vertex": "src/resources/shaders/skybox.vs",
+            "fragment": "src/resources/shaders/skybox.fs"
+        }, 
+        {
+            "name": "depth",
+            "vertex": "src/resources/shaders/shadow.vs",
+            "fragment": "src/resources/shaders/shadow.fs"
+        },
+        {
+            "name": "screen",
+            "vertex": "src/resources/shaders/buffer.vs",
+            "fragment": "src/resources/shaders/buffer.fs"
         }
     ], 
+    "materials": [
+        {
+            "name": "Tile",
+            "diffuse": "src/resources/textures/tile02.png",
+            "specular": "src/resources/textures/tile02_specular.png",
+            "shininess": 32
+        },
+        {
+            "name": "House",
+            "diffuse": "src/resources/textures/house02.png",
+            "specular": "src/resources/textures/house02_specular.png",
+            "shininess": 32
+        }, {
+            "name":"Wall",
+            "diffuse": "src/resources/textures/box01.png",
+            "specular": "src/resources/textures/tile02_specular.png",
+            "shininess": 32
+        },
+        {
+            "name":"player",
+            "diffuse": "src/resources/textures/sportsCar_orange.png",
+            "specular": "src/resources/textures/sportsCar_orange.png",
+            "shininess": 32
+        }
+    ],
     "models": [
          {
             "name": "road",
             "path": "src/resources/models/tile01.obj",
-            "material": {
-                "diffuse": "src/resources/textures/tile02.png",
-                "specular": "src/resources/textures/tile02_specular.png",
-                "shininess": 32
-            },
+            "material":"Tile",
             "shader": "model",
+            "trigger": false,
             "instances": [
                 {
                     "position": {
@@ -102,11 +139,8 @@
         },  {
             "name": "house",
             "path": "src/resources/models/house02.obj",
-            "material": {
-                "diffuse": "src/resources/textures/house02.png",
-                "specular": "src/resources/textures/house02_specular.png",
-                "shininess": 32
-            },
+            "material": "House",
+            "trigger": false,
             "shader": "model",
             "instances": [
                 {
@@ -130,11 +164,8 @@
         }, {
             "name": "wall",
             "path": "src/resources/models/wall.obj",
-            "material": {
-                "diffuse": "src/resources/textures/box01.png",
-                "specular": "src/resources/textures/tile02_specular.png",
-                "shininess": 32
-            },
+            "material": "Wall",
+            "trigger": false,
             "shader": "model",
             "instances": [
                 {
@@ -172,6 +203,38 @@
                     }
                 }
             ]
+        }, {
+            "name": "crystal",
+            "path": "src/resources/models/detail_crystal.obj",
+            "material": "Wall",
+            "trigger": true,
+            "shader": "model",
+            "instances": [
+                {
+                    "position": {
+                        "x": 0.0,
+                        "y": 1.0,
+                        "z": 10.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 10.0,
+                        "y": 5.0,
+                        "z": 10.0
+                    }
+                }
+            ]
+        },
+        {
+            "name": "player",
+            "path": "src/resources/models/sportscar_orange.obj",
+            "material": "player",
+            "trigger": false,
+            "shader": "model"
         }
     ],
     "lights": [

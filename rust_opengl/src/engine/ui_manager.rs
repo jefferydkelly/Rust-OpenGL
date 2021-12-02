@@ -16,6 +16,22 @@ pub struct UIManager {
 
 impl UIManager {
     
+
+    pub fn new(width:f32, height:f32, text:Shader, ui:Shader) -> Self {
+        text.set_vector3f("textColor", 1.0, 1.0, 1.0);
+        let mut tex_rex = TextRenderer::new(800, 600, text);
+        tex_rex.load_font("src/resources/fonts/arial.ttf", 48);
+
+        //let mut rend = SpriteRenderer::new(sprite);
+        let mut rend = UIRenderer::new(width, height, ui);
+        rend.init_render_data();
+        
+        Self {
+            elements:Vec::new(),
+            text_renderer:tex_rex,
+            sprite_renderer: rend
+        }
+    }
     /*
         Creates a new instance of the UI Manager
         width - The width of the screen

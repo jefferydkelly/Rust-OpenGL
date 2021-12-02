@@ -21,9 +21,8 @@ impl Skybox {
     Creates a new Skybox object from the given images
     srcs - A Vector of strings containing the filepaths for the six faces of the skybox
     */
-    pub fn new(srcs:Vec<&str>) -> Self {
+    pub fn new(id:u32) -> Self {
 
-        let the_id = ResourceManager::get_instance().load_cube_map(srcs, "Skybox");
         let vertices:[f32;108] = [
             -1.0,  1.0, -1.0,
             -1.0, -1.0, -1.0,
@@ -82,7 +81,7 @@ impl Skybox {
         }
     
         Skybox {
-            id:the_id,
+            id:id,
             vao:the_vao
         }
     }

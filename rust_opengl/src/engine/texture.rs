@@ -47,16 +47,18 @@ impl Texture {
     pub fn generate(&mut self, file:&str) {
         unsafe {
             gl::GenTextures(1, &mut self.id);
+        }
 
            
-            let mut img = image::open(&Path::new(file)).expect("Texture failed to load");
-            let format = gl::RGBA;
+        let img = image::open(&Path::new(file)).expect("Texture failed to load");
+        let format = gl::RGBA;
 
-            let data = img.to_rgba8().into_raw();
+        let data = img.to_rgba8().into_raw();
 
+        unsafe {
             gl::BindTexture(gl::TEXTURE_2D, self.id);
             gl::TexImage2D(gl::TEXTURE_2D, 0, format as i32, img.width() as i32,
-                           img.height() as i32, 0, format, gl::UNSIGNED_BYTE, &data[0] as *const u8 as *const c_void);
+                            img.height() as i32, 0, format, gl::UNSIGNED_BYTE, &data[0] as *const u8 as *const c_void);
             gl::GenerateMipmap(gl::TEXTURE_2D);
             gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
             gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32);
@@ -64,6 +66,7 @@ impl Texture {
             gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
             gl::BindTexture(gl::TEXTURE_2D, 0);
         }
+        
     }
 
     /*

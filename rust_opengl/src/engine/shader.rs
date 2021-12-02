@@ -39,9 +39,10 @@ impl Shader {
     vertex_shader_source - The text of the vertex shader code
     fragment_shader_source - The text of the fragment shader code
     */
-    pub fn compile(&mut self, vertex_shader_source:&str, fragment_shader_source:&str) {
+    pub fn compile(&mut self, vertex_shader_source:String, fragment_shader_source:String) {
         unsafe {
             let vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
+
             let c_str_vert = CString::new(vertex_shader_source.as_bytes()).unwrap();
             gl::ShaderSource(vertex_shader, 1, &c_str_vert.as_ptr(), ptr::null());
             gl::CompileShader(vertex_shader);
@@ -114,22 +115,21 @@ impl Shader {
     fn check_compile_errors(&self, object:u32, comp_type:&str) {
         unsafe {
             let mut success = gl::FALSE as GLint;
-            let mut info_log = Vec::with_capacity(1024);
+            let mut info_log = Vec::with_capacity(512);
 
             if comp_type != "Program" {
-          
                 gl::GetShaderiv(object, gl::COMPILE_STATUS, &mut success);
 
                 if success != gl::TRUE as GLint {
-                    gl::GetShaderInfoLog(object, 1024, ptr::null_mut(), info_log.as_mut_ptr() as *mut GLchar);
+                    gl::GetShaderInfoLog(object, 512, ptr::null_mut(), info_log.as_mut_ptr() as *mut GLchar);
                     println!("ERROR::SHADER::{}::COMPILATION_FAILED\n{}", comp_type, str::from_utf8(&info_log).unwrap());
                 }
                 
             } else {
                 gl::GetProgramiv(object, gl::LINK_STATUS, &mut success);
-
+             
                 if success != gl::TRUE as GLint {
-                    gl::GetProgramInfoLog(object, 1024, ptr::null_mut(), info_log.as_mut_ptr() as *mut GLchar);
+                    gl::GetProgramInfoLog(object, 512, ptr::null_mut(), info_log.as_mut_ptr() as *mut GLchar);
                     println!("ERROR::SHADER::PROGRAM::COMPILATION_FAILED\n{}", str::from_utf8(&info_log).unwrap());
                 }
              }
