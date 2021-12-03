@@ -1,0 +1,385 @@
+{
+    "shaders": [
+        {
+            "name": "model",
+            "vertex": "shaders\\model.vs",
+            "fragment": "shaders\\model.fs"
+        },
+        {
+            "name": "sky",
+            "vertex": "shaders\\skybox.vs",
+            "fragment": "shaders\\skybox.fs"
+        }, 
+        {
+            "name": "depth",
+            "vertex": "shaders\\shadow.vs",
+            "fragment": "shaders\\shadow.fs"
+        },
+        {
+            "name": "screen",
+            "vertex": "shaders\\buffer.vs",
+            "fragment": "shaders\\buffer.fs"
+        }
+    ], 
+    "materials": [
+        {
+            "name": "Tile",
+            "diffuse": "textures\\tile02.png",
+            "specular": "textures\\tile02_specular.png",
+            "shininess": 32
+        },
+        {
+            "name": "House",
+            "diffuse": "textures\\house02.png",
+            "specular": "textures\\house02_specular.png",
+            "shininess": 32
+        }, {
+            "name":"Wall",
+            "diffuse": "textures\\box01.png",
+            "specular": "textures\\tile02_specular.png",
+            "shininess": 32
+        },
+        {
+            "name":"player",
+            "diffuse": "textures\\sportsCar_orange.png",
+            "specular": "textures\\sportsCar_orange.png",
+            "shininess": 32
+        }
+    ],
+    "models": [
+         {
+            "name": "road",
+            "path": "models\\tile01.obj",
+            "material":"Tile",
+            "shader": "model",
+            "trigger": false,
+            "instances": [
+                {
+                    "position": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                },  {
+                    "position": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 30.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                }, {
+                    "position": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 60.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                }, {
+                    "position": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": -30.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                }, {
+                    "position": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 90.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.05,
+                        "z": 0.15
+                    }
+                }
+            ]
+        },  {
+            "name": "house",
+            "path": "models\\house02.obj",
+            "material": "House",
+            "trigger": false,
+            "shader": "model",
+            "instances": [
+                {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 90.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 0.15,
+                        "y": 0.15,
+                        "z": 0.15
+                    }
+                }
+            ]
+        }, {
+            "name": "wall",
+            "path": "models\\wall.obj",
+            "material": "Wall",
+            "trigger": false,
+            "shader": "model",
+            "instances": [
+                {
+                    "position": {
+                        "x": -18,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 10.0,
+                        "y": 5.0,
+                        "z": 10.0
+                    }
+                }, 
+                {
+                    "position": {
+                        "x": 10.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                        "rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 10.0,
+                        "y": 5.0,
+                        "z": 10.0
+                    }
+                }
+            ]
+        },
+        {
+            "name": "player",
+            "path": "models\\sportscar_orange.obj",
+            "material": "player",
+            "trigger": false,
+            "shader": "model"
+        }
+    ],
+    "lights": [
+        {
+            "type": "directional",
+            "direction": {
+                "x": -0.2,
+                "y": -1.0,
+                "z": -0.3
+            },
+            "ambient": {
+                "x": 0.05,
+                "y": 0.05,
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.4,
+                "y": 0.4,
+                "z": 0.4
+            },
+            "specular": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.5
+            }
+        },  
+        {
+            "type": "point",
+            "position": {
+                "x": 2.3, 
+                "y": -3.3, 
+                "z": -4.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
+        }, 
+        {
+            "type": "point",
+            "position": {
+                "x": -4.0, 
+                "y": 2.0, 
+                "z": -12.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
+        },
+        {
+            "type": "point",
+            "position": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": -3.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
+        },
+        {
+            "type": "point",
+            "position": {
+                "x": 0.7, 
+                "y": 0.2, 
+                "z": 2.0
+            },
+            "ambient": { 
+                "x": 0.05, 
+                "y": 0.05, 
+                "z": 0.05
+            },
+            "diffuse": {
+                "x": 0.8, 
+                "y": 0.8, 
+                "z": 0.8
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032
+        },
+        {
+            "type": "spot",
+            "position": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": -3.0
+            },
+            "direction": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": -3.0
+            },
+            "ambient": { 
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": 0.0
+            },
+            "diffuse": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "specular": {
+                "x": 1.0, 
+                "y": 1.0, 
+                "z": 1.0
+            },
+            "constant": 1.0,
+            "linear": 0.09,
+            "quadratic": 0.032,
+            "cutoff": 12.5,
+            "outerCutoff": 15.0
+        }
+    ],
+    "skybox": [
+        "textures\\skybox\\right.jpg",
+        "textures\\skybox\\left.jpg",
+        "textures\\skybox\\top.jpg",
+        "textures\\skybox\\bottom.jpg",
+        "textures\\skybox\\front.jpg",
+        "textures\\skybox\\back.jpg"
+    ]
+}

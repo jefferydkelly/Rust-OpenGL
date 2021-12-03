@@ -68,8 +68,7 @@ impl Game {
         let cammie = Camera::new(glm::vec3(0.0, 10.0, -50.0), glm::vec3(0.0, 1.0, 0.0), 90.0, 0.0, vec2(800.0, 600.0));
         Physics::get_instance().set_matrix(cammie.get_projection_matrix(), cammie.get_view_matrix());
         
-        let levy = ResourceManager::get_instance().load_level("src/resources/json/test.json");
-        println!("Level has been loaded");
+        let levy = ResourceManager::get_instance().load_level("json\\test.json");
         
         
         
@@ -243,7 +242,7 @@ impl Game {
         self.skybox_shader.set_int("skybox", 0);
         self.level.draw_skybox();
         unsafe {    
-            UIManager::get_instance().render();
+            //UIManager::get_instance().render();
             gl::BindFramebuffer(gl::FRAMEBUFFER, 0);
 
             gl::ClearColor(1.0, 1.0, 1.0, 1.0);

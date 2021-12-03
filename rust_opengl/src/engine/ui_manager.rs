@@ -38,9 +38,9 @@ impl UIManager {
         height - The height of the screen
     */
     pub fn create_instance(width:f32, height:f32) {
-        let text_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/text.vs", "src/resources/shaders/text.fs", "text");
+        let text_shader = ResourceManager::get_instance().get_shader("model");//ResourceManager::get_instance().load_shader("src/resources/shaders/text.vs", "src/resources/shaders/text.fs", "text");
 
-        let ui_sprite_shader = ResourceManager::get_instance().load_shader("src/resources/shaders/text.vs", "src/resources/shaders/basicShader.fs", "ui");
+        let ui_sprite_shader = ResourceManager::get_instance().get_shader("model");//ResourceManager::get_instance().load_shader("src/resources/shaders/text.vs", "src/resources/shaders/basicShader.fs", "ui");
         text_shader.set_vector3f("textColor", 1.0, 1.0, 1.0);
         let mut tex_rex = TextRenderer::new(800, 600, text_shader);
         tex_rex.load_font("src/resources/fonts/arial.ttf", 48);

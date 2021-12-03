@@ -1,6 +1,6 @@
 extern crate gl;
 use core::f32;
-use std::{ffi::c_void, path::Path};
+use std::{ffi::c_void, path::{Path, PathBuf}};
 
 use image::{self, GenericImageView};
 use nalgebra_glm::{Vec3, vec3};
@@ -44,13 +44,13 @@ impl Texture {
     Fills out the information for the texture based on the given file string
     file - a string containing the path to the texture file
     */
-    pub fn generate(&mut self, file:&str) {
+    pub fn generate(&mut self, file:PathBuf) {
         unsafe {
             gl::GenTextures(1, &mut self.id);
         }
 
            
-        let img = image::open(&Path::new(file)).expect("Texture failed to load");
+        let img = image::open(file).expect("Texture failed to load");
         let format = gl::RGBA;
 
         let data = img.to_rgba8().into_raw();

@@ -1,7 +1,7 @@
 use core::f32;
 use std::ffi::c_void;
-use std::hash::Hash;
-use std::path::Path;
+use std::env;
+use std::path::{Path, PathBuf};
 use std::{collections::HashMap};
 use std::thread;
 use std::fs::{self};
@@ -15,10 +15,9 @@ use crate::engine::model::{Material, Model};
 use crate::engine::shader::Shader;
 use crate::engine::texture::Texture;
 use crate::engine::lights::*;
-use crate::level::{self, Level};
+use crate::level::Level;
 use crate::engine::transform::Transform;
 
-use super::model;
 use super::skybox::Skybox;
 
 static mut RESOURCE_MANAGER:OnceCell<ResourceManager> = OnceCell::new();
@@ -28,21 +27,32 @@ pub struct ResourceManager {
     shaders:HashMap<String, Shader>,
     textures:HashMap<String, Texture>,
     materials:HashMap<String, Material>,
-    models:HashMap<String, Model>
+    models:HashMap<String, Model>,
+    resource_path:PathBuf
 }
 
 impl  ResourceManager {
     
+    fn new()-> Self {
+
+        let exe_path =  env::current_exe().unwrap();
+        let base_dir =exe_path.parent().unwrap().parent().unwrap().parent().unwrap();
+        
+        let resources_dir = base_dir.join("resources");
+
+        Self {
+            shaders: HashMap::new(),
+            textures: HashMap::new(),
+            materials: HashMap::new(),
+            models: HashMap::new(),
+            resource_path:resources_dir
+        }
+    }
     /*
     Creates the single instance of the Resource Manager.
     */
     pub fn create_instance() {
-        let many = ResourceManager {
-            shaders: HashMap::new(),
-            textures: HashMap::new(),
-            materials: HashMap::new(),
-            models: HashMap::new()
-        };
+        let many = ResourceManager::new();
 
         unsafe {
             RESOURCE_MANAGER.set(many).unwrap();
@@ -86,7 +96,7 @@ impl  ResourceManager {
     name - The name of the shader to be used as its key in the shaders dictionary
     return - The loaded shader
     */
-    pub fn load_shader(&mut self, v_shader_src:&str, f_shader_src:&str, name:&str) -> Shader {
+    pub fn load_shader(&mut self, v_shader_src:PathBuf, f_shader_src:PathBuf, name:&str) -> Shader {
         let shady = self.load_shader_from_file(v_shader_src, f_shader_src);
         self.shaders.insert(name.to_string(), shady);
         shady
@@ -99,7 +109,7 @@ impl  ResourceManager {
     name - The name of the shader to be used as its key in the shaders dictionary
     return - The loaded shader
     */
-    pub fn load_shader_with_geometry(&mut self, v_shader_src:&str, f_shader_src:&str, g_shader_src:&str, name:&str) -> Shader {
+    pub fn load_shader_with_geometry(&mut self, v_shader_src:PathBuf, f_shader_src:PathBuf, g_shader_src:PathBuf, name:&str) -> Shader {
         let shady = self.load_shader_from_file_with_geometry(v_shader_src, f_shader_src, g_shader_src);
         self.shaders.insert(name.to_string(), shady);
         shady
@@ -111,7 +121,7 @@ impl  ResourceManager {
     f_shader_src - The path to the fragment shader file
     return - The loaded shader
     */
-    fn load_shader_from_file(&self, v_shader_src:&str, f_shader_src:&str) -> Shader {
+    fn load_shader_from_file(&self, v_shader_src:PathBuf, f_shader_src:PathBuf) -> Shader {
         let vertex_code;
         let fragment_code;
 
@@ -130,7 +140,7 @@ impl  ResourceManager {
     f_shader_src - The path to the fragment shader file
     return - The loaded shader
     */
-    fn load_shader_from_file_with_geometry(&self, v_shader_src:&str, f_shader_src:&str, g_shader_src:&str) -> Shader {
+    fn load_shader_from_file_with_geometry(&self, v_shader_src:PathBuf, f_shader_src:PathBuf, g_shader_src:PathBuf) -> Shader {
         let vertex_code;
         let fragment_code;
         let geometry_code:String;
@@ -149,7 +159,7 @@ impl  ResourceManager {
     file - The path to the file containing the shader code
     return - The text of the shader file
     */
-    fn read_shader_file(&self, file:&str) -> String {
+    fn read_shader_file(&self, file:PathBuf) -> String {
         let code = fs::read_to_string(file).expect("Unable to load shader");
         code
     }
@@ -174,7 +184,7 @@ impl  ResourceManager {
     name - The name of the texture to be used as its key in the textures dictionary
     return - The loaded texture
     */
-    pub fn load_texture(&mut self, src: &str, name:&str)->Texture {
+    pub fn load_texture(&mut self, src: PathBuf, name:&str)->Texture {
         let mut texture = Texture::new();
         texture.generate(src);
         self.textures.insert(name.to_string(), texture);
@@ -227,25 +237,20 @@ impl  ResourceManager {
             gl::BindTexture(gl::TEXTURE_CUBE_MAP, cube_id);
         }
        
-        let mut handles = Vec::new();
+        
         for i in 0..srcs.len() {
             let src = srcs[i].clone().to_string();
-            let new_handle = thread::spawn(move||{
-                let img = image::open(&Path::new(&src)).expect("Texture failed to load");
-                let format = gl::RGB;
-
-                let data = img.to_rgb8().into_raw();
-                unsafe {
-                    gl::TexImage2D(gl::TEXTURE_CUBE_MAP_POSITIVE_X + i as u32, 0, format as i32, img.width() as i32,
-                                img.height() as i32, 0, format, gl::UNSIGNED_BYTE, &data[0] as *const u8 as *const c_void);
-                }
-            });
+            let path = self.resource_path.join(src);
+            let x = i;
             
-            handles.push(new_handle);
-        }
+            let img = image::open(&path).expect("Texture failed to load");
+            let format = gl::RGB;
 
-        for handle in handles {
-            handle.join().unwrap();
+            let data = img.to_rgb8().into_raw();
+            unsafe {
+                gl::TexImage2D(gl::TEXTURE_CUBE_MAP_POSITIVE_X + x as u32, 0, format as i32, img.width() as i32,
+                            img.height() as i32, 0, format, gl::UNSIGNED_BYTE, &data[0] as *const u8 as *const c_void);
+            }
         }
 
         unsafe {
@@ -261,6 +266,10 @@ impl  ResourceManager {
         cube_id
     }
 
+    fn load_cube_map_side(src: PathBuf, offset:usize) {
+        
+    }
+
     /*
     Loads the given json file and turns it into a Level object with lighting, shaders and models
     path - The path to the json file containing the Level info
@@ -268,7 +277,7 @@ impl  ResourceManager {
     */
     pub fn load_level(&mut self, path:&str) -> Level {
 
-        let code = fs::read_to_string(path).expect("Unable to load JSON");
+        let code = fs::read_to_string(self.resource_path.join(path)).expect("Unable to load JSON");
         let v:Value = serde_json::from_str(&code).unwrap();
 
         let mut faces = Vec::new();
@@ -291,17 +300,17 @@ impl  ResourceManager {
                 let shader_name =  val["name"].as_str().unwrap().clone();
                 
     
-                let vert = val["vertex"].as_str().unwrap().to_string();
-                let frag = val["fragment"].as_str().unwrap().to_string();
+                let vert = self.resource_path.join(val["vertex"].as_str().unwrap().to_string());
+                let frag = self.resource_path.join(val["fragment"].as_str().unwrap().to_string());
                 
                 let has_geo = !val["geometry"].is_null();
                 if has_geo {
-                    let geo = val["geometry"].as_str().unwrap().to_string();
-                    let shader = self.load_shader_with_geometry(&vert, &frag, &geo, shader_name);
+                    let geo = self.resource_path.join(val["geometry"].as_str().unwrap().to_string());
+                    let shader = self.load_shader_with_geometry(vert, frag, geo, shader_name);
                     shaders.insert(shader_name.to_string(), shader);
                     
                 } else {
-                    let shader = self.load_shader(&vert, &frag, shader_name);
+                    let shader = self.load_shader(vert, frag, shader_name);
                     shaders.insert(shader_name.to_string(), shader);
                 }
             }
@@ -316,14 +325,13 @@ impl  ResourceManager {
             
                 let material_name = val["name"].as_str().unwrap().to_string();
                 let shininess = val["shininess"].as_f64().unwrap() as f32;
-                let dif_src = val["diffuse"].as_str().unwrap();
+                let dif_src = self.resource_path.join(val["diffuse"].as_str().unwrap());
 
-                let spec_src = val["specular"].as_str().unwrap();
+                let spec_src  = self.resource_path.join(val["specular"].as_str().unwrap());
                 
                 let diffuse = self.load_texture(dif_src, "diffuse");
                 let specular = self.load_texture(spec_src, "specular");            
                 let material:Material = Material::new(diffuse, specular, shininess);
-                println!("Loaded {} Material", material_name);
                 materials.insert(material_name, material);
 
             }
@@ -336,7 +344,6 @@ impl  ResourceManager {
         let mut level = level_handle.join().unwrap();
         self.shaders = shader_handle.join().unwrap();
         self.materials = mat_handle.join().unwrap();
-        println!("Loading models");
         for val in v["models"].as_array().unwrap() {
             let model_name = val["name"].as_str().unwrap();
             
@@ -346,7 +353,7 @@ impl  ResourceManager {
             let material = self.materials[val["material"].as_str().unwrap()];
             
             
-            let path = val["path"].as_str().unwrap();
+            let path = self.resource_path.join(val["path"].as_str().unwrap());
             let is_trigger = val["trigger"].as_bool().unwrap();
             let model = Model::new(path, shader, material, is_trigger);
             
@@ -367,7 +374,6 @@ impl  ResourceManager {
                 level.add_game_object(game_object3d);
             }
             
-            println!("Model {} has been loaded", model_name);
             self.models.insert(model_name.to_string(), model);
             
         }

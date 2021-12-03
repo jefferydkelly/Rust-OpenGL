@@ -1,4 +1,4 @@
-use std::{path::Path, usize};
+use std::{path::{Path, PathBuf}, usize};
 
 use crate::engine::{mesh::InstancedMesh, shader::Shader, texture::Texture, transform::Transform, vertex::Vertex};
 use tobj;
@@ -47,9 +47,9 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(path:&str, shader:Shader, mat:Material, trigger:bool) -> Self {
+    pub fn new(path:PathBuf, shader:Shader, mat:Material, trigger:bool) -> Self {
     
-        let new_path = Path::new(path);
+        let new_path = path.as_path();
         let cannon = new_path.canonicalize().unwrap();
         let path_str = cannon.to_str().unwrap();
       

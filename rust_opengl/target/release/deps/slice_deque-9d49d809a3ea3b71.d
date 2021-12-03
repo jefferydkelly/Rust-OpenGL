@@ -1,0 +1,11 @@
+C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\deps\slice_deque-9d49d809a3ea3b71.rmeta: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\macros.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\mod.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\buffer.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\winapi.rs
+
+C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\deps\libslice_deque-9d49d809a3ea3b71.rlib: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\macros.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\mod.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\buffer.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\winapi.rs
+
+C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\deps\slice_deque-9d49d809a3ea3b71.d: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\macros.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\mod.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\buffer.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\winapi.rs
+
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\lib.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\macros.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\mod.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\buffer.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\slice-deque-0.3.0\src\mirrored\winapi.rs:

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\build\glfw-sys-27f1e3273fd10da9\out\build\CMakeFiles\51fb3d9ec7944776b19b6abbc21ee1fc\uninstall.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\glfw-sys-3.3.4\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\build\glfw-sys-27f1e3273fd10da9\out\build\CMakeFiles\uninstall" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{250E88AE-8E7D-3D35-BB63-E578E24CFFAC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

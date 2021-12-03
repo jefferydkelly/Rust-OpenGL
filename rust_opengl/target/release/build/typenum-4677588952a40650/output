@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\build\typenum-4677588952a40650\out\consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\build\typenum-4677588952a40650\out\op.rs

@@ -1,0 +1,12 @@
+C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\deps\bytemuck-0afb234aedc8d7f8.rmeta: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\zeroable.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\pod.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\contiguous.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\offset_of.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\transparent.rs
+
+C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\deps\libbytemuck-0afb234aedc8d7f8.rlib: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\zeroable.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\pod.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\contiguous.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\offset_of.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\transparent.rs
+
+C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\deps\bytemuck-0afb234aedc8d7f8.d: C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\lib.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\zeroable.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\pod.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\contiguous.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\offset_of.rs C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\transparent.rs
+
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\lib.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\zeroable.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\pod.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\contiguous.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\offset_of.rs:
+C:\Users\jdk91\.cargo\registry\src\github.com-1ecc6299db9ec823\bytemuck-1.5.1\src\transparent.rs:

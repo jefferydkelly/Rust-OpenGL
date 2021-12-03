@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jdk91\Documents\Rust OpenGL\rust_opengl\target\release\build\freetype-sys-e898703532265015\out\build\CMakeFiles\8f51db587b0dbc349f91dadb74f8b919\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6516A835-E5C2-373A-A2D7-C3ECFEE40FFE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
