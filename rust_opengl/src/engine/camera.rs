@@ -163,16 +163,7 @@ impl Camera {
     
         if !InputManager::get_instance().is_gamepad() {
             let true_offset = offset.scale(self.mouse_sensitivity);
-            
             self.yaw += true_offset.x;
-            self.pitch += true_offset.y;
-            
-            if self.pitch < -89.0 {
-                self.pitch = -89.0;
-            } else if self.pitch > 89.0 {
-                self.pitch = 89.0;
-            }
-
             self.update_camera_vectors();
         }
     
